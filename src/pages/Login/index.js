@@ -105,8 +105,8 @@ const Login = () => {
                   type: 'password',
                 }}
                 className={classes.textField}
-                error={validatePassword ? true : false}
-                helperText={validatePassword && validatePassword}
+                // error={validatePassword ? true : false}
+                // helperText={validatePassword && validatePassword}
                 onBlur={validatePassword}
               />
             </div>
