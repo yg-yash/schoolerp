@@ -1,24 +1,20 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import styles from './styles';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import CardHeader from '@material-ui/core/CardHeader';
-import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
-import FormControl from '@material-ui/core/FormControl';
 import Button from '@material-ui/core/Button';
 import { Wrapper } from '../../../../../components';
 import AppBar from '@material-ui/core/AppBar';
 import ArrowRight from '@material-ui/icons/ArrowRight';
 import Toolbar from '@material-ui/core/Toolbar';
 import AttachFileIcon from '@material-ui/icons/AttachFile';
-
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
-const AddInstitutionDetails = () => {
+
+const VideoUpload = () => {
   const classes = styles();
-  const [userType, setUserType] = useState();
 
   return (
     <Wrapper padding={false}>
@@ -87,4 +83,4 @@ const AddInstitutionDetails = () => {
   );
 };
 
-export default AddInstitutionDetails;
+export default VideoUpload;

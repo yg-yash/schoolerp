@@ -11,63 +11,123 @@ import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import { useHistory } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import * as loginActions from '../../actions/auth';
 
 const Login = () => {
   const classes = styles();
-  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [emailError, setEmailError] = useState('');
+  const [passwordError, setpasswordError] = useState('');
   const [value, setValue] = useState('admin');
   const history = useHistory();
+
+  const dispatch = useDispatch();
+  const { isLoginLoading } = useSelector((state) => state.loadingReducer);
+  const { error } = useSelector((state) => state.loginReducer);
 
   const handleChange = (event) => {
     setValue(event.target.value);
   };
+
+  const validateEmail = () => {
+    const regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+    if (!email) {
+      setEmailError('Email Is Required');
+      return false;
+    }
+    if (!regex.test(email)) {
+      setEmailError('Email Is Invalid');
+      return false;
+    }
+    setEmailError('');
+    return true;
+  };
+  const validatePassword = () => {
+    if (!password) {
+      setpasswordError('Password Is Required');
+      return false;
+    }
+    setpasswordError('');
+    return true;
+  };
+
   const onSubmit = () => {
-    localStorage.setItem('role', value);
-    history.push('/', value);
+    // if (!email || !password) {
+    //   return;
+    // }
+    dispatch(loginActions.requestLogin(email, password, value, history));
   };
   return (
     <Grid container className={classes.container}>
       <Card elevation={3} className={classes.card}>
         <CardContent>
-          <div className={classes.inputContainer}>
-            <Typography variant="body1" className={classes.label}>
-              Username <span className={classes.required}>*</span>
-            </Typography>
-            <TextField
-              variant="outlined"
-              InputProps={{
-                className: classes.textFieldInput,
-              }}
-              className={classes.textField}
-              value={name}
-              onChange={(e) => setName(e.target.vallue)}
-            />
-          </div>
-          <div className={classes.inputContainer}>
-            <Typography variant="body1" className={classes.label}>
-              Password <span className={classes.required}>*</span>
-            </Typography>
-            <TextField
-              variant="outlined"
-              InputProps={{
-                className: classes.textFieldInput,
-              }}
-              className={classes.textField}
-              value={name}
-              onChange={(e) => setName(e.target.vallue)}
-            />
-          </div>
-
-          <Button
-            variant="contained"
-            color="primary"
-            startIcon={<LockIcon />}
-            className={classes.loginBtn}
-            onClick={onSubmit}
+          <form
+            className={classes.root}
+            noValidate
+            autoComplete="off"
+            onSubmit={onSubmit}
           >
-            Login
-          </Button>
+            <div className={classes.inputContainer}>
+              <Typography variant="body1" className={classes.label}>
+                Email <span className={classes.required}>*</span>
+              </Typography>
+              <TextField
+                variant="outlined"
+                InputProps={{
+                  className: classes.textFieldInput,
+                  onChange: (e) => setEmail(e.target.value),
+                  value: email,
+                  required: true,
+                  type: 'email',
+                }}
+                error={emailError ? true : false}
+                helperText={emailError && emailError}
+                className={classes.textField}
+                onBlur={validateEmail}
+              />
+            </div>
+
+            <div className={classes.inputContainer}>
+              <Typography variant="body1" className={classes.label}>
+                Password <span className={classes.required}>*</span>
+              </Typography>
+              <TextField
+                variant="outlined"
+                InputProps={{
+                  className: classes.textFieldInput,
+                  onChange: (e) => setPassword(e.target.value),
+                  value: password,
+                  required: true,
+                  type: 'password',
+                }}
+                className={classes.textField}
+                error={validatePassword ? true : false}
+                helperText={validatePassword && validatePassword}
+                onBlur={validatePassword}
+              />
+            </div>
+
+            <div style={{ textAlign: 'center' }}>
+              <Button
+                variant="contained"
+                color="primary"
+                startIcon={isLoginLoading ? null : <LockIcon />}
+                className={classes.loginBtn}
+                onClick={onSubmit}
+                // disabled={!email || !password}
+              >
+                {isLoginLoading ? (
+                  <CircularProgress color="secondary" size={25} />
+                ) : (
+                  'Login'
+                )}
+              </Button>
+            </div>
+          </form>
         </CardContent>
         <div
           style={{

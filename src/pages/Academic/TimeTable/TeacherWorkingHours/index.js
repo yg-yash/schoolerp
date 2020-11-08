@@ -34,7 +34,7 @@ const rows = [
   createData(3, 'Melanie Smith', 9),
 ];
 
-const AssignCourse = ({ width }) => {
+const TeacherWorkingGours = ({ width }) => {
   const [userType, setUserType] = useState('');
 
   const classes = styles();
@@ -123,4 +123,4 @@ const AssignCourse = ({ width }) => {
   );
 };
 
-export default AssignCourse;
+export default TeacherWorkingGours;

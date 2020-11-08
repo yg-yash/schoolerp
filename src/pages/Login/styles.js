@@ -58,7 +58,7 @@ const useStyles = makeStyles((theme) => ({
     height: 40,
   },
   uploadBtn: {
-    marginRight: 5,
+    // marginRight: 5,
   },
   btnRow: {
     marginTop: 10,
@@ -68,7 +68,8 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
   },
   loginBtn: {
-    left: '35%',
+    // left: '35%',
+    alignSelf: 'center',
     marginTop: 20,
     textTransform: 'uppercase',
   },
@@ -80,6 +81,14 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+  },
+  errorText: {
+    color: 'red',
+    marginTop: 5,
+    fontWeight: 600,
+  },
+  mainError: {
+    textAlign: 'center',
   },
 }));
 

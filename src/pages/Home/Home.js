@@ -1,12 +1,5 @@
-// import { Bar, Bubble } from 'react-chartjs-2';
-import {
-  // NewsCard,
-  // PostCard,
-  StatCard,
-  // WeatherCard,
-  Wrapper,
-} from '../../components';
-import React, { useState } from 'react';
+import { StatCard, Wrapper } from '../../components';
+import React, { useState, useEffect } from 'react';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import Grid from '@material-ui/core/Grid';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
@@ -43,9 +36,14 @@ const data = [
 
 const Home = (props) => {
   const [anchorEl, setAnchorEl] = useState(null);
-
+  const [role, setRole] = useState('');
   const handleClick = (event) => setAnchorEl(event.currentTarget);
   const handleClose = () => setAnchorEl(null);
+
+  useEffect(() => {
+    const role = localStorage.getItem('role');
+    setRole(role);
+  }, []);
 
   const chartMenu = (
     <Menu
@@ -81,11 +79,18 @@ const Home = (props) => {
     </Menu>
   );
 
-  return props.history.location.state === 'student' ? (
+  // return props.history.location.state === 'student' ? (
+  //   <Student />
+  // ) : props.history.location.state === 'teacher' ? (
+  //   <Teacher />
+  // ) : props.history.location.state === 'guardian' ? (
+  //   <Guradian />
+  // ) : (
+  return role === 'student' ? (
     <Student />
-  ) : props.history.location.state === 'teacher' ? (
+  ) : role === 'teacher' ? (
     <Teacher />
-  ) : props.history.location.state === 'guardian' ? (
+  ) : role === 'guardian' ? (
     <Guradian />
   ) : (
     <Wrapper>

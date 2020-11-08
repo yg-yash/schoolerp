@@ -91,7 +91,7 @@ import SetTimetable from './Academic/TimeTable/SetTimetable';
 import ActiveTimeTable from './Academic/TimeTable/ActiveTimeTable';
 import ViewBatchTimeTable from './Academic/TimeTable/ViewBatchTimeTable';
 import ViewTeacherTimetable from './Academic/TimeTable/ViewTeacherTimetable';
-import TeamWorkingHours from './Academic/TimeTable/TeamWorkingHours';
+import TeacherWorkingHours from './Academic/TimeTable/TeacherWorkingHours';
 import TimetableExport from './Academic/TimeTable/TimetableExport';
 import TimetableImport from './Academic/TimeTable/TimetableImport';
 import SearchProxy from './Academic/TimeTable/SearchProxy';
@@ -112,6 +112,103 @@ import UnitTest from './Academic/Exams/OnlineExam/UnitTest';
 import AssignTask from './TaskManager/AssignTask';
 import TaskDetails from './TaskManager/TaskDetails';
 import VideoUpload from './Academic/Exams/OnlineExam/VideoUpload';
+//certificate
+import CertificateType from './Academic/Certificate/CertificateType';
+import CustomCertificate from './Academic/Certificate/CustomCertificate';
+import GenerateCertificate from './Academic/Certificate/GenerateCertificate';
+//placements
+import PlacementsCellMembers from './Academic/Placements/PlacementsCellMembers';
+import PlacementVendor from './Academic/Placements/PlacementVendor';
+import PlacementAttendees from './Academic/Placements/Attendees';
+import PlacedDetails from './Academic/Placements/PlacedDetails';
+//occurrence
+import OccurrenceRegister from './Academic/Occurence/OccurrenceRegister';
+//circular
+import Circular from './Academic/Circular';
+
+//hr/payroll
+import AddUserType from './HRPayroll/EmployeeManagement/AddUserType';
+import AddDepartment from './HRPayroll/EmployeeManagement/AddDepartment';
+import AddDesignation from './HRPayroll/EmployeeManagement/AddDesignation';
+import AddEmployee from './HRPayroll/EmployeeManagement/AddEmployee';
+import EmployeeList from './HRPayroll/EmployeeManagement/EmployeeList';
+import AddBankDetails from './HRPayroll/EmployeeManagement/AddBankDetails';
+import PrintList from './HRPayroll/EmployeeManagement/PrintList';
+import Withdrawal from './HRPayroll/EmployeeManagement/Withdrawal';
+import PayHead from './HRPayroll/Payroll/PayHead';
+import PayableType from './HRPayroll/Payroll/PayableType';
+import SalarySettings from './HRPayroll/Payroll/SalarySettings';
+import EmployeeSalary from './HRPayroll/Payroll/EmployeeSalary';
+import GeneratepaySlip from './HRPayroll/Payroll/GeneralPaySlip';
+import LeaveCategory from './HRPayroll/LeaveManagement/LeaveCategory';
+import LeaveDetails from './HRPayroll/LeaveManagement/LeaveDetails';
+import LeaveApplication from './HRPayroll/LeaveManagement/LeaveApplication';
+import LeaveApproval from './HRPayroll/LeaveManagement/LeaveApprovals';
+import Attendance from './HRPayroll/Attendance';
+import StudentCategory from './Student/StudentCategory';
+import StudentList from './Student/StudentList';
+import StudentAttendance from './Student/Attendance';
+import StudentPrintList from './Student/PrintList';
+import GuardianList from './Student/GuardianList';
+import RollNumber from './Student/RollNumber';
+import StudentAttendanceImport from './Student/StudentAttendanceImport';
+import FeeCategory from './Finance/Fees/FeeCategory';
+import FeeSubCategory from './Finance/Fees/FeesSubCategory';
+import FeeWaiver from './Finance/Fees/FeesWaiver';
+import FeeTemplate from './Finance/Fees/FeeTemplate';
+import FeeAllocation from './Finance/Fees/FeeAllocation';
+import QuickPayment from './Finance/Fees/QuickPayment';
+import Reports from './Finance/Fees/Reports';
+import FeeImport from './Finance/Fees/FeeImport';
+import AccountGroup from './Finance/Accounting/AccountGroup';
+import VoucherHead from './Finance/Accounting/VoucherHead';
+import CreateVoucher from './Finance/Accounting/CreateVoucher';
+import DayBook from './Finance/Accounting/DayBook';
+import CashBook from './Finance/Accounting/CashBook';
+import BankBook from './Finance/Accounting/BankBook';
+import AddCategory from './Library/AddCategory';
+import AddBooks from './Library/AddBooks';
+import RequestDetails from './Library/RequestDetails';
+import BookReturn from './Library/BookReturn';
+import LibraryReports from './Library/Reports';
+import LibraryImport from './Library/Import';
+import AddVehicle from './Transport/AddVehicle';
+import AddDriver from './Transport/AddDriver';
+import AddRoute from './Transport/AddRoute';
+import AddDestination from './Transport/AddDestination';
+import TransportAllocation from './Transport/TransportAllocation';
+import TransportImport from './Transport/Import';
+import TransportSMSAlert from './Transport/SmsAlert';
+import DataExport from './DataExport';
+import EventTypes from './Events/EventTypes';
+import AddEvent from './Events/AddEvents';
+import HostelDetails from './Hostel/HostelDetails';
+import HostelRoom from './Hostel/HostelRoom';
+import HostelAllocation from './Hostel/HostelAllocation';
+import HostelRequestDetails from './Hostel/RequestDetails';
+import HostelTransfer from './Hostel/HostelTransfer';
+import HostelRegister from './Hostel/HostelRegister';
+import HostelVisitor from './Hostel/HostelVisitor';
+import HostelFeeCollection from './Hostel/HostelFeeCollection';
+import Vendors from './StoreManagement/Vendors';
+import InventoryCategory from './StoreManagement/InventoryCategory';
+import InventoryItem from './StoreManagement/InventoryItem';
+import StockRegister from './StoreManagement/StockRegister';
+import IssuedReport from './StoreManagement/IssuedReport';
+import StudentPerformance from './Performance/GPA/StudentPerformance';
+import StudentReport from './Reports/StudentReports';
+import StudentDetailsReport from './Reports/StudentDetails';
+import FeeDue from './Reports/FeeDue';
+import FeePaid from './Reports/FeePaid';
+import ElectiveReports from './Reports/ElectiveReports';
+import Absentees from './Reports/Absentees';
+import ClassReport from './Reports/ClassReport';
+import FeesConsoliadatedReport from './Reports/FeesConsoliadatedReport';
+import VisitorSMSSettings from './MessagesAndSms/VisitorSMSSettings';
+import BulkSms from './MessagesAndSms/Bulksms';
+import EmailSettings from './MessagesAndSms/EmailSettings';
+import CreateTemplate from './MessagesAndSms/CreateTemplate';
+import SendEmail from './MessagesAndSms/SendEmail';
 
 export {
   Home,
@@ -193,7 +290,7 @@ export {
   ActiveTimeTable,
   ViewBatchTimeTable,
   ViewTeacherTimetable,
-  TeamWorkingHours,
+  TeacherWorkingHours,
   TimetableExport,
   TimetableImport,
   SetTerm,
@@ -215,4 +312,95 @@ export {
   AssignTask,
   TaskDetails,
   VideoUpload,
+  CertificateType,
+  CustomCertificate,
+  GenerateCertificate,
+  PlacementsCellMembers,
+  PlacementVendor,
+  PlacementAttendees,
+  PlacedDetails,
+  OccurrenceRegister,
+  Circular,
+  AddUserType,
+  AddDepartment,
+  AddDesignation,
+  AddEmployee,
+  EmployeeList,
+  AddBankDetails,
+  PrintList,
+  Withdrawal,
+  PayHead,
+  PayableType,
+  SalarySettings,
+  EmployeeSalary,
+  GeneratepaySlip,
+  LeaveCategory,
+  LeaveDetails,
+  LeaveApplication,
+  LeaveApproval,
+  Attendance,
+  StudentCategory,
+  StudentList,
+  StudentAttendance,
+  StudentPrintList,
+  GuardianList,
+  RollNumber,
+  StudentAttendanceImport,
+  FeeCategory,
+  FeeSubCategory,
+  FeeWaiver,
+  FeeTemplate,
+  FeeAllocation,
+  QuickPayment,
+  Reports,
+  FeeImport,
+  AccountGroup,
+  VoucherHead,
+  CreateVoucher,
+  DayBook,
+  CashBook,
+  BankBook,
+  AddCategory,
+  AddBooks,
+  RequestDetails,
+  BookReturn,
+  LibraryReports,
+  LibraryImport,
+  AddVehicle,
+  AddDriver,
+  AddRoute,
+  AddDestination,
+  TransportAllocation,
+  TransportImport,
+  TransportSMSAlert,
+  DataExport,
+  EventTypes,
+  AddEvent,
+  HostelDetails,
+  HostelRoom,
+  HostelAllocation,
+  HostelRequestDetails,
+  HostelTransfer,
+  HostelRegister,
+  HostelVisitor,
+  HostelFeeCollection,
+  Vendors,
+  InventoryCategory,
+  InventoryItem,
+  StockRegister,
+  IssuedReport,
+  StudentPerformance,
+  StudentReport,
+  StudentDetailsReport,
+  FeeDue,
+  FeePaid,
+  ElectiveReports,
+  Absentees,
+  ClassReport,
+  FeesConsoliadatedReport,
+  VisitorSMSSettings,
+  BulkSms,
+  EmailSettings,
+  CreateTemplate,
+  SendEmail,
 };
