@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
-import TextField from '@material-ui/core/TextField';
 import styles from './styles';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
@@ -10,24 +9,22 @@ import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Button from '@material-ui/core/Button';
-
 import { Wrapper } from '../../../../components';
 import AppBar from '@material-ui/core/AppBar';
 import ArrowRight from '@material-ui/icons/ArrowRight';
 import Toolbar from '@material-ui/core/Toolbar';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import SaveIcon from '@material-ui/icons/Save';
+import * as courseActions from '../../../../actions/course';
+import * as batchActions from '../../../../actions/batch';
+import * as subjectActions from '../../../../actions/academic/subjects';
+import { useSelector, useDispatch } from 'react-redux';
 
-const names = [
-  'Chemistry',
-  'Drawing -D3465',
-  'English -ENG1001',
-  'GK-GK100',
-  'GK- GK145',
-];
 const Subjects = () => {
   const classes = styles();
-  const [userType, setUserType] = useState();
-  const [personName, setPersonName] = React.useState([]);
+  const [batchId, setBatchId] = useState('');
+  const [courseId, setCourseId] = useState('');
+  const [subjectIds, setSubejctIds] = useState([]);
   const handleChangeMultiple = (event) => {
     const { options } = event.target;
     const value = [];
@@ -36,8 +33,32 @@ const Subjects = () => {
         value.push(options[i].value);
       }
     }
-    setPersonName(value);
+    setSubejctIds(value);
   };
+  const dispatch = useDispatch();
+  const { courses } = useSelector((state) => state.couseReducer);
+  const { coursesBatch } = useSelector((state) => state.batchReducer);
+  const { subjects } = useSelector((state) => state.subjectReducer);
+  const { isSubjectAssign } = useSelector((state) => state.loadingReducer);
+
+  useEffect(() => {
+    dispatch(courseActions.getRequest());
+    dispatch(subjectActions.getRequest());
+  }, []);
+
+  const getCoursesBatch = (id) => {
+    dispatch(batchActions.getCourseBatchRequest(id));
+  };
+
+  const onSubmit = () => {
+    const data = {
+      course: courseId,
+      batch: batchId,
+      subjects: subjectIds,
+    };
+    dispatch(subjectActions.assignRequest(data));
+  };
+
   return (
     <Wrapper padding={false}>
       <AppBar position="static" color="primary">
@@ -67,14 +88,19 @@ const Subjects = () => {
                 </Typography>
                 <FormControl variant="filled" className={classes.textField}>
                   <Select
-                    value={userType}
+                    value={courseId}
                     variant="outlined"
-                    onChange={(e) => setUserType(e.target.value)}
+                    onChange={(e) => {
+                      setCourseId(e.target.value);
+                      getCoursesBatch(e.target.value);
+                    }}
                     className={classes.select}
                   >
-                    <MenuItem value="india">STD II</MenuItem>
-                    <MenuItem value="australia">STD III</MenuItem>
-                    <MenuItem value="usa">STD IV</MenuItem>
+                    {courses.map((item, index) => (
+                      <MenuItem value={item._id} key={index}>
+                        {item.courseName}
+                      </MenuItem>
+                    ))}
                   </Select>
                 </FormControl>
               </div>
@@ -84,14 +110,16 @@ const Subjects = () => {
                 </Typography>
                 <FormControl variant="filled" className={classes.textField}>
                   <Select
-                    value={userType}
+                    value={batchId}
                     variant="outlined"
-                    onChange={(e) => setUserType(e.target.value)}
+                    onChange={(e) => setBatchId(e.target.value)}
                     className={classes.select}
                   >
-                    <MenuItem value="india">A</MenuItem>
-                    <MenuItem value="australia">B</MenuItem>
-                    <MenuItem value="usa">C</MenuItem>
+                    {coursesBatch.map((item, index) => (
+                      <MenuItem value={item._id} key={index}>
+                        {item.batchName}
+                      </MenuItem>
+                    ))}
                   </Select>
                 </FormControl>
               </div>
@@ -103,19 +131,16 @@ const Subjects = () => {
                   <Select
                     multiple
                     native
-                    value={personName}
+                    value={subjectIds}
                     onChange={handleChangeMultiple}
-                    inputProps={{
-                      id: 'select-multiple-native',
-                    }}
                   >
-                    {names.map((name) => (
+                    {subjects.map((item, index) => (
                       <option
-                        key={name}
-                        value={name}
+                        key={index}
+                        value={item._id}
                         style={{ margin: 10, padding: 10 }}
                       >
-                        {name}
+                        {`${item.name}-${item.code}`}
                       </option>
                     ))}
                   </Select>
@@ -126,9 +151,14 @@ const Subjects = () => {
               variant="contained"
               color="primary"
               className={classes.savebtn}
-              startIcon={<SaveIcon />}
+              startIcon={!isSubjectAssign && <SaveIcon />}
+              onClick={onSubmit}
             >
-              Save
+              {isSubjectAssign ? (
+                <CircularProgress color="secondary" />
+              ) : (
+                'Save'
+              )}
             </Button>
           </Card>
         </Grid>

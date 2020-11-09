@@ -12,7 +12,7 @@ function loginUserApi(email, password, role) {
   } else if (role === 'superadmin') {
     url = `/${API.SUPER_ADMIN_LOGIN}`;
   } else if (role === 'admin') {
-    url = `/${API.ADMIN_LOGIN}`;
+    url = `${API.BASE_URL}/${API.ADMIN}/login`;
   } else if (role === 'guardian') {
     url = `/${API.GURADIAN_LOGIN}`;
   } else {
@@ -26,20 +26,19 @@ function* loginAsync(action) {
   console.log(action);
   try {
     yield put(loginActions.enableLoader());
-    // const response = yield call(
-    //   loginUserApi,
-    //   action.email,
-    //   action.password,
-    //   action.role
-    // );
-    // yield put(saveToken(response.data.token));
-    // yield put(saveToken(action.role));
-    saveToken(action.role);
+    const response = yield call(
+      loginUserApi,
+      action.email,
+      action.password,
+      action.role
+    );
+
+    saveToken(response.data.token, action.role);
     yield put(loginActions.disableLoader({}));
     action.history.push('/');
   } catch (e) {
     console.log(e);
-    // yield put(loginActions.logiknFailed(e.response.data));
+    yield put(loginActions.loginFailed(e.response.data));
     yield put(loginActions.disableLoader({}));
   }
 }
@@ -48,8 +47,7 @@ export function* loginSaga() {
   yield takeEvery(types.LOGIN_REQUEST, loginAsync);
 }
 
-function saveToken(token) {
-  console.log('erole', token);
-  // localStorage.setItem('erpToken', token);
-  localStorage.setItem('role', token);
+function saveToken(token, role) {
+  localStorage.setItem('erpToken', token);
+  localStorage.setItem('role', role);
 }

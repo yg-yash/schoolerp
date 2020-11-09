@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
@@ -14,6 +14,7 @@ import { Wrapper } from '../../../../components';
 import AppBar from '@material-ui/core/AppBar';
 import ArrowRight from '@material-ui/icons/ArrowRight';
 import Toolbar from '@material-ui/core/Toolbar';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import SaveIcon from '@material-ui/icons/Save';
 import DateFnsUtils from '@date-io/date-fns';
 import {
@@ -21,20 +22,41 @@ import {
   KeyboardDatePicker,
 } from '@material-ui/pickers';
 import 'date-fns';
+import * as actions from '../../../../actions/batch';
+import * as courseActions from '../../../../actions/course';
+import { useSelector, useDispatch } from 'react-redux';
 
-const AddInstitutionDetails = () => {
+const Batch = () => {
   const classes = styles();
-  const [name, setName] = useState('');
-  const [userType, setUserType] = useState();
-  const [phone, setPhone] = useState('');
+  const [batchName, setBatchName] = useState('');
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setendDate] = useState(new Date());
+  const [maximumStudents, setMaximumStudents] = useState('');
+  const [courseId, setCourseId] = useState('');
 
-  const [selectedDate, setSelectedDate] = React.useState(
-    new Date('2014-08-18T21:11:54')
+  const dispatch = useDispatch();
+
+  const { courses } = useSelector((state) => state.couseReducer);
+  const { error } = useSelector((state) => state.batchReducer);
+  const { isCoursesLoading, isBatchAdding } = useSelector(
+    (state) => state.loadingReducer
   );
 
-  const handleDateChange = (date) => {
-    setSelectedDate(date);
+  useEffect(() => {
+    dispatch(courseActions.getRequest());
+  }, []);
+
+  const onSubmit = () => {
+    const data = {
+      batchName,
+      startDate,
+      endDate,
+      maximumStudents: Number(maximumStudents),
+      course: courseId,
+    };
+    dispatch(actions.addRequest(data));
   };
+
   return (
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
       <Wrapper padding={false}>
@@ -65,14 +87,16 @@ const AddInstitutionDetails = () => {
                   </Typography>
                   <FormControl variant="filled" className={classes.textField}>
                     <Select
-                      value={userType}
+                      value={courseId}
                       variant="outlined"
-                      onChange={(e) => setUserType(e.target.value)}
+                      onChange={(e) => setCourseId(e.target.value)}
                       className={classes.select}
                     >
-                      <MenuItem value="india">Course 1</MenuItem>
-                      <MenuItem value="australia">Course 2</MenuItem>
-                      <MenuItem value="usa">Course 3</MenuItem>
+                      {courses.map((item, index) => (
+                        <MenuItem value={item._id} key={index}>
+                          {item.courseName}
+                        </MenuItem>
+                      ))}
                     </Select>
                   </FormControl>
                 </div>
@@ -84,10 +108,10 @@ const AddInstitutionDetails = () => {
                     variant="outlined"
                     InputProps={{
                       className: classes.textFieldInput,
+                      value: batchName,
+                      onChange: (e) => setBatchName(e.target.value),
                     }}
                     className={classes.textField}
-                    value={name}
-                    onChange={(e) => setName(e.target.vallue)}
                   />
                 </div>
                 <div className={`${classes.inputContainer}`}>
@@ -101,8 +125,8 @@ const AddInstitutionDetails = () => {
                     margin="normal"
                     id="date-picker-inline"
                     // label="Date picker inline"
-                    value={selectedDate}
-                    onChange={handleDateChange}
+                    value={startDate}
+                    onChange={(e) => setStartDate(e)}
                     className={classes.textField}
                     KeyboardButtonProps={{
                       'aria-label': 'change date',
@@ -120,8 +144,8 @@ const AddInstitutionDetails = () => {
                     margin="normal"
                     id="date-picker-inline"
                     // label="Date picker inline"
-                    value={selectedDate}
-                    onChange={handleDateChange}
+                    value={endDate}
+                    onChange={(e) => setendDate(e)}
                     className={classes.textField}
                     KeyboardButtonProps={{
                       'aria-label': 'change date',
@@ -137,20 +161,28 @@ const AddInstitutionDetails = () => {
                     variant="outlined"
                     InputProps={{
                       className: classes.textFieldInput,
+                      value: maximumStudents,
+                      onChange: (e) => setMaximumStudents(e.target.value),
                     }}
                     className={classes.textField}
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.vallue)}
                   />
                 </div>
               </CardContent>
+              <Typography variant="body2" className={classes.errorText}>
+                {error && error.error}
+              </Typography>
               <Button
                 variant="contained"
                 color="primary"
                 className={classes.savebtn}
-                startIcon={<SaveIcon />}
+                startIcon={!isBatchAdding && <SaveIcon />}
+                onClick={onSubmit}
               >
-                Save
+                {isBatchAdding ? (
+                  <CircularProgress color="secondary" />
+                ) : (
+                  'Save'
+                )}
               </Button>
             </Card>
           </Grid>
@@ -160,4 +192,4 @@ const AddInstitutionDetails = () => {
   );
 };
 
-export default AddInstitutionDetails;
+export default Batch;

@@ -44,6 +44,16 @@ const useStyles = makeStyles((theme) => ({
   tableRow: {
     backgroundColor: 'white',
   },
+  tableCell: {
+    textTransform: 'capitalize',
+    fontSize: 15,
+  },
+  errorText: {
+    color: 'red',
+    marginTop: 5,
+    fontWeight: 600,
+    textAlign: 'center',
+  },
 }));
 
 export default useStyles;

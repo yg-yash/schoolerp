@@ -48,7 +48,7 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
   },
   savebtn: {
-    margin: '10px 0 0 10px',
+    margin: '10px 0 10px 10px',
   },
   cardHeader: {
     backgroundColor: theme.palette.primary.main,
@@ -56,6 +56,12 @@ const useStyles = makeStyles((theme) => ({
   },
   cardTitle: {
     color: 'white',
+  },
+  errorText: {
+    color: 'red',
+    marginTop: 5,
+    fontWeight: 600,
+    textAlign: 'center',
   },
 }));
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import styles from './styles';
@@ -13,11 +13,44 @@ import { Wrapper } from '../../../../components';
 import AppBar from '@material-ui/core/AppBar';
 import ArrowRight from '@material-ui/icons/ArrowRight';
 import Toolbar from '@material-ui/core/Toolbar';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import SaveIcon from '@material-ui/icons/Save';
+import { useSelector, useDispatch } from 'react-redux';
+import * as batchActions from '../../../../actions/batch';
+import * as courseActions from '../../../../actions/course';
+import * as actions from '../../../../actions/classTeacher';
+import * as teacherActions from '../../../../actions/teachers';
 
-const AddInstitutionDetails = () => {
+const ClassTeacherAllocation = () => {
   const classes = styles();
-  const [userType, setUserType] = useState();
+  const [courseId, setCourseId] = useState('');
+  const [batchId, setBatchId] = useState('');
+  const [teacherId, setTeacherId] = useState('');
+
+  const { courses } = useSelector((state) => state.couseReducer);
+  const { coursesBatch } = useSelector((state) => state.batchReducer);
+  const { isClassTeacherAdding } = useSelector((state) => state.loadingReducer);
+  const { teachers } = useSelector((state) => state.teacherReducer);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(courseActions.getRequest());
+    dispatch(teacherActions.getRequest());
+  }, []);
+
+  const getCoursesBatch = (id) => {
+    dispatch(batchActions.getCourseBatchRequest(id));
+  };
+
+  const onSubmit = () => {
+    const data = {
+      course: courseId,
+      batch: batchId,
+      classTeacher: teacherId,
+    };
+
+    dispatch(actions.addRequest(data));
+  };
 
   return (
     <Wrapper padding={false}>
@@ -48,14 +81,20 @@ const AddInstitutionDetails = () => {
                 </Typography>
                 <FormControl variant="filled" className={classes.textField}>
                   <Select
-                    value={userType}
+                    value={courseId}
                     variant="outlined"
-                    onChange={(e) => setUserType(e.target.value)}
+                    onChange={(e) => {
+                      setCourseId(e.target.value);
+                      getCoursesBatch(e.target.value);
+                    }}
                     className={classes.select}
                   >
-                    <MenuItem value="india">Course 1</MenuItem>
-                    <MenuItem value="australia">Course 2</MenuItem>
-                    <MenuItem value="usa">Course 3</MenuItem>
+                    {courses &&
+                      courses.map((item, index) => (
+                        <MenuItem value={item._id} key={index}>
+                          {item.courseName}
+                        </MenuItem>
+                      ))}
                   </Select>
                 </FormControl>
               </div>
@@ -65,14 +104,19 @@ const AddInstitutionDetails = () => {
                 </Typography>
                 <FormControl variant="filled" className={classes.textField}>
                   <Select
-                    value={userType}
+                    value={batchId}
                     variant="outlined"
-                    onChange={(e) => setUserType(e.target.value)}
+                    onChange={(e) => {
+                      setBatchId(e.target.value);
+                    }}
                     className={classes.select}
                   >
-                    <MenuItem value="india">Course 1</MenuItem>
-                    <MenuItem value="australia">Course 2</MenuItem>
-                    <MenuItem value="usa">Course 3</MenuItem>
+                    {coursesBatch &&
+                      coursesBatch.map((item, index) => (
+                        <MenuItem value={item._id} key={index}>
+                          {item.batchName}
+                        </MenuItem>
+                      ))}
                   </Select>
                 </FormControl>
               </div>
@@ -82,14 +126,25 @@ const AddInstitutionDetails = () => {
                 </Typography>
                 <FormControl variant="filled" className={classes.textField}>
                   <Select
-                    value={userType}
+                    value={teacherId}
                     variant="outlined"
-                    onChange={(e) => setUserType(e.target.value)}
+                    onChange={(e) => setTeacherId(e.target.value)}
                     className={classes.select}
                   >
-                    <MenuItem value="india">Course 1</MenuItem>
-                    <MenuItem value="australia">Course 2</MenuItem>
-                    <MenuItem value="usa">Course 3</MenuItem>
+                    {teachers ? (
+                      teachers.length < 1 ? (
+                        <MenuItem value="">
+                          <em>No Teacher</em>
+                        </MenuItem>
+                      ) : (
+                        teachers.map((item, index) => (
+                          <MenuItem
+                            value={item._id}
+                            key={index}
+                          >{`${item.firstName} ${item.lastName}`}</MenuItem>
+                        ))
+                      )
+                    ) : null}
                   </Select>
                 </FormControl>
               </div>
@@ -98,9 +153,14 @@ const AddInstitutionDetails = () => {
               variant="contained"
               color="primary"
               className={classes.savebtn}
-              startIcon={<SaveIcon />}
+              startIcon={!isClassTeacherAdding && <SaveIcon />}
+              onClick={onSubmit}
             >
-              Save
+              {isClassTeacherAdding ? (
+                <CircularProgress color="secondary" />
+              ) : (
+                'Save'
+              )}
             </Button>
           </Card>
         </Grid>
@@ -109,4 +169,4 @@ const AddInstitutionDetails = () => {
   );
 };
 
-export default AddInstitutionDetails;
+export default ClassTeacherAllocation;

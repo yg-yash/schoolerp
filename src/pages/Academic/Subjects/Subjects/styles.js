@@ -63,6 +63,12 @@ const useStyles = makeStyles((theme) => ({
   savebtn: {
     margin: '20px 0 20px 20px',
   },
+  errorText: {
+    color: 'red',
+    marginTop: 5,
+    fontWeight: 600,
+    textAlign: 'center',
+  },
 }));
 
 export default useStyles;

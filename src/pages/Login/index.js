@@ -56,9 +56,9 @@ const Login = () => {
   };
 
   const onSubmit = () => {
-    // if (!email || !password) {
-    //   return;
-    // }
+    if (!email || !password) {
+      return;
+    }
     dispatch(loginActions.requestLogin(email, password, value, history));
   };
   return (
@@ -105,12 +105,15 @@ const Login = () => {
                   type: 'password',
                 }}
                 className={classes.textField}
-                // error={validatePassword ? true : false}
-                // helperText={validatePassword && validatePassword}
+                error={passwordError ? true : false}
+                helperText={passwordError && passwordError}
                 onBlur={validatePassword}
               />
             </div>
 
+            <Typography variant="body2" className={classes.errorText}>
+              {error && error.error}
+            </Typography>
             <div style={{ textAlign: 'center' }}>
               <Button
                 variant="contained"
@@ -118,7 +121,7 @@ const Login = () => {
                 startIcon={isLoginLoading ? null : <LockIcon />}
                 className={classes.loginBtn}
                 onClick={onSubmit}
-                // disabled={!email || !password}
+                disabled={!email || !password}
               >
                 {isLoginLoading ? (
                   <CircularProgress color="secondary" size={25} />

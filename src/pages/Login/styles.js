@@ -86,6 +86,7 @@ const useStyles = makeStyles((theme) => ({
     color: 'red',
     marginTop: 5,
     fontWeight: 600,
+    textAlign: 'center',
   },
   mainError: {
     textAlign: 'center',

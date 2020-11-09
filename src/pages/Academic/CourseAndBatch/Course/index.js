@@ -14,17 +14,38 @@ import { Wrapper } from '../../../../components';
 import AppBar from '@material-ui/core/AppBar';
 import ArrowRight from '@material-ui/icons/ArrowRight';
 import Toolbar from '@material-ui/core/Toolbar';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import SaveIcon from '@material-ui/icons/Save';
+import * as actions from '../../../../actions/course';
+import { useSelector, useDispatch } from 'react-redux';
 
-const AddInstitutionDetails = () => {
+const Course = () => {
   const classes = styles();
   const [name, setName] = useState('');
-  const [address, setAddress] = useState('');
-  const [userType, setUserType] = useState();
-  const [phone, setPhone] = useState('');
-  const [mobile, setMobile] = useState('');
-  const [contactPerson, setContactPerson] = useState('');
+  const [description, setDescription] = useState('');
+  const [code, setCode] = useState('');
+  const [minimumAttendance, setMinimumAttendance] = useState('');
+  const [attendanceType, setAttendanceType] = useState('');
+  const [totalWorkingDay, setTotalWorkingDay] = useState('');
+  const [syllabusName, setSyllabusName] = useState('');
+  const { isCourseAdding } = useSelector((state) => state.loadingReducer);
+  // const { error } = useSelector((state) => state.courseReducer);
 
+  const dispatch = useDispatch();
+
+  const onSubmit = () => {
+    const data = {
+      courseName: name,
+      description,
+      code,
+      minimumAttendance: Number(minimumAttendance),
+      attendanceType,
+      totalWorkingDay: Number(totalWorkingDay),
+      syllabusName,
+    };
+
+    dispatch(actions.addRequest(data));
+  };
   return (
     <Wrapper padding={false}>
       <AppBar position="static" color="primary">
@@ -56,10 +77,10 @@ const AddInstitutionDetails = () => {
                   variant="outlined"
                   InputProps={{
                     className: classes.textFieldInput,
+                    value: name,
+                    onChange: (e) => setName(e.target.value),
                   }}
                   className={classes.textField}
-                  value={name}
-                  onChange={(e) => setName(e.target.vallue)}
                 />
               </div>
               <div className={`${classes.inputContainer}`}>
@@ -70,12 +91,10 @@ const AddInstitutionDetails = () => {
                   variant="outlined"
                   InputProps={{
                     className: classes.textFieldInput,
+                    value: description,
+                    onChange: (e) => setDescription(e.target.value),
                   }}
-                  multiline
-                  rows={3}
                   className={classes.textField}
-                  value={address}
-                  onChange={(e) => setAddress(e.target.vallue)}
                 />
               </div>
               <div className={classes.inputContainer}>
@@ -86,10 +105,10 @@ const AddInstitutionDetails = () => {
                   variant="outlined"
                   InputProps={{
                     className: classes.textFieldInput,
+                    value: code,
+                    onChange: (e) => setCode(e.target.value),
                   }}
                   className={classes.textField}
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.vallue)}
                 />
               </div>
               <div className={classes.inputContainer}>
@@ -101,10 +120,10 @@ const AddInstitutionDetails = () => {
                   variant="outlined"
                   InputProps={{
                     className: classes.textFieldInput,
+                    value: minimumAttendance,
+                    onChange: (e) => setMinimumAttendance(e.target.value),
                   }}
                   className={classes.textField}
-                  value={mobile}
-                  onChange={(e) => setMobile(e.target.vallue)}
                 />
               </div>
               <div className={classes.inputContainer}>
@@ -113,14 +132,14 @@ const AddInstitutionDetails = () => {
                 </Typography>
                 <FormControl variant="filled" className={classes.textField}>
                   <Select
-                    value={userType}
+                    value={attendanceType}
                     variant="outlined"
-                    onChange={(e) => setUserType(e.target.value)}
+                    onChange={(e) => setAttendanceType(e.target.value)}
                     className={classes.select}
                   >
-                    <MenuItem value="india">Daily</MenuItem>
-                    <MenuItem value="australia">Weekly</MenuItem>
-                    <MenuItem value="usa">Monthly</MenuItem>
+                    <MenuItem value="Daily">Daily</MenuItem>
+                    <MenuItem value="Weekly">Weekly</MenuItem>
+                    <MenuItem value="Monthly">Monthly</MenuItem>
                   </Select>
                 </FormControl>
               </div>
@@ -132,10 +151,10 @@ const AddInstitutionDetails = () => {
                   variant="outlined"
                   InputProps={{
                     className: classes.textFieldInput,
+                    value: totalWorkingDay,
+                    onChange: (e) => setTotalWorkingDay(e.target.value),
                   }}
                   className={classes.textField}
-                  value={contactPerson}
-                  onChange={(e) => setContactPerson(e.target.vallue)}
                 />
               </div>
               <div className={classes.inputContainer}>
@@ -144,24 +163,28 @@ const AddInstitutionDetails = () => {
                 </Typography>
                 <FormControl variant="filled" className={classes.textField}>
                   <Select
-                    value={userType}
+                    value={syllabusName}
                     variant="outlined"
-                    onChange={(e) => setUserType(e.target.value)}
+                    onChange={(e) => setSyllabusName(e.target.value)}
                     className={classes.select}
                   >
-                    <MenuItem value="india">GPA</MenuItem>
-                    <MenuItem value="australia">CCA</MenuItem>
+                    <MenuItem value="GPA">GPA</MenuItem>
+                    <MenuItem value="CCE">CCE</MenuItem>
                   </Select>
                 </FormControl>
               </div>
             </CardContent>
+            {/* <Typography variant="body2" className={classes.errorText}>
+              {error && error.error}
+            </Typography> */}
             <Button
               variant="contained"
               color="primary"
               className={classes.savebtn}
-              startIcon={<SaveIcon />}
+              startIcon={!isCourseAdding && <SaveIcon />}
+              onClick={onSubmit}
             >
-              Save
+              {isCourseAdding ? <CircularProgress color="secondary" /> : 'Save'}
             </Button>
           </Card>
         </Grid>
@@ -170,4 +193,4 @@ const AddInstitutionDetails = () => {
   );
 };
 
-export default AddInstitutionDetails;
+export default Course;

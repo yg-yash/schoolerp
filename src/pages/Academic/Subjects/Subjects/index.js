@@ -9,14 +9,32 @@ import CardHeader from '@material-ui/core/CardHeader';
 import Button from '@material-ui/core/Button';
 import { Wrapper } from '../../../../components';
 import AppBar from '@material-ui/core/AppBar';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import ArrowRight from '@material-ui/icons/ArrowRight';
 import Toolbar from '@material-ui/core/Toolbar';
 import SaveIcon from '@material-ui/icons/Save';
 
+import { useSelector, useDispatch } from 'react-redux';
+import * as actions from '../../../../actions/academic/subjects';
+
 const Subjects = () => {
   const classes = styles();
   const [name, setName] = useState('');
-  const [address, setAddress] = useState('');
+  const [code, setCode] = useState('');
+
+  const dispatch = useDispatch();
+
+  const { error } = useSelector((state) => state.subjectReducer);
+  const { isSubjectAdding } = useSelector((state) => state.loadingReducer);
+
+  const onSubmit = () => {
+    const data = {
+      name,
+      code,
+    };
+    dispatch(actions.addRequest(data));
+  };
+
   return (
     <Wrapper padding={false}>
       <AppBar position="static" color="primary">
@@ -48,10 +66,10 @@ const Subjects = () => {
                   variant="outlined"
                   InputProps={{
                     className: classes.textFieldInput,
+                    value: name,
+                    onChange: (e) => setName(e.target.value),
                   }}
                   className={classes.textField}
-                  value={name}
-                  onChange={(e) => setName(e.target.vallue)}
                 />
               </div>
               <div className={`${classes.inputContainer}`}>
@@ -62,22 +80,28 @@ const Subjects = () => {
                   variant="outlined"
                   InputProps={{
                     className: classes.textFieldInput,
+                    value: code,
+                    onChange: (e) => setCode(e.target.value),
                   }}
-                  multiline
-                  rows={3}
                   className={classes.textField}
-                  value={address}
-                  onChange={(e) => setAddress(e.target.vallue)}
                 />
               </div>
             </CardContent>
+            <Typography variant="body2" className={classes.errorText}>
+              {error && error.error}
+            </Typography>
             <Button
               variant="contained"
               color="primary"
               className={classes.savebtn}
-              startIcon={<SaveIcon />}
+              startIcon={!isSubjectAdding && <SaveIcon />}
+              onClick={onSubmit}
             >
-              Save
+              {isSubjectAdding ? (
+                <CircularProgress color="secondary" />
+              ) : (
+                'Save'
+              )}
             </Button>
           </Card>
         </Grid>

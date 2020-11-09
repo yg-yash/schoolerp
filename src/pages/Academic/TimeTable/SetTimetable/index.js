@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import AppBar from '@material-ui/core/AppBar';
 import Button from '@material-ui/core/Button';
 import ArrowRight from '@material-ui/icons/ArrowRight';
@@ -29,6 +29,13 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import Divider from '@material-ui/core/Divider';
 import SaveIcon from '@material-ui/icons/Save';
+import TextField from '@material-ui/core/TextField';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import * as courseActions from '../../../../actions/course';
+import * as batchActions from '../../../../actions/batch';
+import * as actions from '../../../../actions/timetable';
+import FormGroup from '@material-ui/core/FormGroup';
+import { useSelector, useDispatch } from 'react-redux';
 
 function createData(day) {
   return { day };
@@ -54,9 +61,62 @@ const AssignCourse = ({ width }) => {
   const [userType, setUserType] = useState('');
   const [showWeeklyDays, setShowWeeklyDays] = useState(false);
   const [showPeriodTiming, setShowPeriodTiming] = useState(false);
+  const [courseId, setCourseId] = useState('');
+  const [batchId, setBatchId] = useState('');
+  const [name, setName] = useState('');
+  const [days, setDays] = useState([
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+    'Friday',
+    'Saturday',
+    'Sunday',
+  ]);
 
   const togglePeriodTiming = () => setShowPeriodTiming((value) => !value);
   const toggleWeeklyDays = () => setShowWeeklyDays((value) => !value);
+  const [weekdays, setWeekdays] = useState([
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+    'Friday',
+    'Saturday',
+    'Sunday',
+  ]);
+  const [mydays, setmydays] = useState([]);
+
+  const dispatch = useDispatch();
+  const { courses } = useSelector((state) => state.couseReducer);
+  const { coursesBatch } = useSelector((state) => state.batchReducer);
+
+  const { isTimetableAdding } = useSelector((state) => state.loadingReducer);
+
+  useEffect(() => {
+    dispatch(courseActions.getRequest());
+  }, []);
+
+  const getCoursesBatch = (id) => {
+    dispatch(batchActions.getCourseBatchRequest(id));
+  };
+  const handleCheck = (event) => {
+    const { value } = event.target;
+    // setmydays((olda) => {
+    //   let newArray;
+    //   olda.map((item, index) => {
+    //     if (item === value) {
+    //       newArray = olda.filter((inner) => inner !== value);
+    //     } else {
+    //       newArray = [...olda, value];
+    //     }
+    //   });
+    //   return newArray;
+    // });
+    setDays((days) =>
+      days.includes(value) ? days.filter((c) => c !== value) : [...days, value]
+    );
+  };
 
   const classes = styles();
   return (
@@ -89,14 +149,38 @@ const AssignCourse = ({ width }) => {
                   </Typography>
                   <FormControl variant="filled" className={classes.textField}>
                     <Select
-                      value={userType}
+                      value={courseId}
                       variant="outlined"
-                      onChange={(e) => setUserType(e.target.value)}
+                      onChange={(e) => {
+                        setCourseId(e.target.value);
+                        getCoursesBatch(e.target.value);
+                      }}
                       className={classes.select}
                     >
-                      <MenuItem value="india">STD I_cgpa</MenuItem>
-                      <MenuItem value="australia">STD II_gpa</MenuItem>
-                      <MenuItem value="usa">STD III_gpar</MenuItem>
+                      {courses.map((item, index) => (
+                        <MenuItem value={item._id} key={index}>
+                          {item.courseName}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </div>
+                <div className={classes.inputContainer}>
+                  <Typography variant="body2">
+                    Batch <span className={classes.required}>*</span>
+                  </Typography>
+                  <FormControl variant="filled" className={classes.textField}>
+                    <Select
+                      value={batchId}
+                      variant="outlined"
+                      onChange={(e) => setBatchId(e.target.value)}
+                      className={classes.select}
+                    >
+                      {coursesBatch.map((item, index) => (
+                        <MenuItem value={item._id} key={index}>
+                          {item.batchName}
+                        </MenuItem>
+                      ))}
                     </Select>
                   </FormControl>
                 </div>
@@ -105,36 +189,15 @@ const AssignCourse = ({ width }) => {
                     Batch <span className={classes.required}>*</span>
                   </Typography>
 
-                  <FormControl variant="filled" className={classes.textField}>
-                    <Select
-                      value={userType}
-                      variant="outlined"
-                      onChange={(e) => setUserType(e.target.value)}
-                      className={classes.select}
-                    >
-                      <MenuItem value="india">A</MenuItem>
-                      <MenuItem value="australia">B</MenuItem>
-                      <MenuItem value="usa">C</MenuItem>
-                    </Select>
-                  </FormControl>
-                </div>
-                <div className={classes.inputContainer}>
-                  <Typography variant="body2">
-                    Batch <span className={classes.required}>*</span>
-                  </Typography>
-
-                  <FormControl variant="filled" className={classes.textField}>
-                    <Select
-                      value={userType}
-                      variant="outlined"
-                      onChange={(e) => setUserType(e.target.value)}
-                      className={classes.select}
-                    >
-                      <MenuItem value="india">Set-1</MenuItem>
-                      <MenuItem value="australia">Set-2</MenuItem>
-                      <MenuItem value="usa">Set-3</MenuItem>
-                    </Select>
-                  </FormControl>
+                  <TextField
+                    variant="outlined"
+                    InputProps={{
+                      className: classes.textFieldInput,
+                      value: name,
+                      onChange: (e) => setName(e.target.value),
+                    }}
+                    className={classes.textField}
+                  />
                 </div>
                 <Button
                   color="secondary"
@@ -192,10 +255,14 @@ const AssignCourse = ({ width }) => {
           <Button
             variant="contained"
             className={classes.saveBtn}
-            startIcon={<SaveIcon />}
+            startIcon={!isTimetableAdding && <SaveIcon />}
             color="primary"
           >
-            Save Timetable
+            {isTimetableAdding ? (
+              <CircularProgress color="secondary" />
+            ) : (
+              'Save Timetable'
+            )}
           </Button>
         </Grid>
       </Grid>
@@ -217,40 +284,23 @@ const AssignCourse = ({ width }) => {
         <DialogContent>
           <Typography variant="h6">Weekdays</Typography>
           <Divider />
-          <FormControlLabel
-            control={<Checkbox name="checkedA" />}
-            label="Sunday"
-          />
-          <Divider />
-          <FormControlLabel
-            control={<Checkbox name="checkedA" />}
-            label="Monday"
-          />
-          <Divider />
-          <FormControlLabel
-            control={<Checkbox name="checkedA" />}
-            label="Tuesday"
-          />
-          <Divider />
-          <FormControlLabel
-            control={<Checkbox name="checkedA" />}
-            label="Wednesday"
-          />
-          <Divider />
-          <FormControlLabel
-            control={<Checkbox name="checkedA" />}
-            label="Thursday"
-          />
-          <Divider />
-          <FormControlLabel
-            control={<Checkbox name="checkedA" />}
-            label="Friday"
-          />
-          <Divider />
-          <FormControlLabel
-            control={<Checkbox name="checkedA" />}
-            label="Saturday"
-          />
+          <FormGroup>
+            {days.map((item, index) => (
+              <div key={index}>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      onChange={(e) => handleCheck(e)}
+                      // checked
+                      {...days.includes(item)}
+                    />
+                  }
+                  label={item}
+                />
+                <Divider />
+              </div>
+            ))}
+          </FormGroup>
         </DialogContent>
         <DialogActions>
           <Button onClick={toggleWeeklyDays} color="primary">

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import AppBar from '@material-ui/core/AppBar';
 import Button from '@material-ui/core/Button';
 import ArrowRight from '@material-ui/icons/ArrowRight';
@@ -21,6 +21,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import SaveIcon from '@material-ui/icons/Save';
 import TextField from '@material-ui/core/TextField';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import AttachFileIcon from '@material-ui/icons/AttachFile';
 import EditIcon from '@material-ui/icons/Edit';
 import DateFnsUtils from '@date-io/date-fns';
@@ -29,64 +30,63 @@ import {
   KeyboardDatePicker,
 } from '@material-ui/pickers';
 import 'date-fns';
+import { useSelector, useDispatch } from 'react-redux';
+import * as batchActions from '../../../../actions/batch';
+import * as subjectActions from '../../../../actions/academic/subjects';
+import * as courseActions from '../../../../actions/course';
+import * as actions from '../../../../actions/assignments';
 
-function createData(no, title, course, batch, subject, dateOfSubmission) {
-  return { no, title, course, batch, subject, dateOfSubmission };
-}
-
-const rows = [
-  createData(1, 'Assignment1', 'STD II', 'A', 'English-ENG1001', '2015-Jun-10'),
-  createData(
-    2,
-    'Maths asssignment 4',
-    'STD II',
-    'A',
-    'Maths-ENG1001',
-    '2015-May-10'
-  ),
-];
-
-const AssignCourse = ({ width }) => {
-  const [userType, setUserType] = useState('');
-  const [checked, setChecked] = React.useState([0]);
+const Assignment = () => {
   const [title, setTitle] = useState('');
-  const [list, setList] = useState([
-    'STD I',
-    'STD II',
-    'STD III',
-    'STD IV',
-    'STD V',
-    'STD VI',
-    'STD VII',
-    'STD VIII',
-    'STD IX',
-    'STD X',
-    'STD XI',
-    'STD XII',
-  ]);
-
-  const [selectedDate, setSelectedDate] = React.useState(
-    new Date('2014-08-18T21:11:54')
-  );
-
+  const [description, setDescription] = useState('');
+  const [file, setFile] = useState('');
+  const [courseId, setCourseId] = useState('');
+  const [batchId, setBatchId] = useState('');
+  const [subjectId, setSubjectId] = useState('');
+  const [submissionDate, setSubmissionDate] = useState(new Date());
   const handleDateChange = (date) => {
-    setSelectedDate(date);
+    setSubmissionDate(date);
   };
-
-  const handleToggle = (value) => () => {
-    const currentIndex = checked.indexOf(value);
-    const newChecked = [...checked];
-
-    if (currentIndex === -1) {
-      newChecked.push(value);
-    } else {
-      newChecked.splice(currentIndex, 1);
-    }
-
-    setChecked(newChecked);
+  const getCoursesBatch = (id) => {
+    dispatch(batchActions.getCourseBatchRequest(id));
   };
+  const dispatch = useDispatch();
+
+  const { courses } = useSelector((state) => state.couseReducer);
+  const { coursesBatch } = useSelector((state) => state.batchReducer);
+  const { list } = useSelector((state) => state.assignmentReducer);
+  const { isAssignmentAdding } = useSelector((state) => state.loadingReducer);
+  const { specificSubjects } = useSelector((state) => state.subjectReducer);
 
   const classes = styles();
+
+  const onFileChange = (event) => {
+    setFile(event.target.files[0]);
+  };
+
+  const onSubmit = () => {
+    const formData = new FormData();
+    formData.append('title', title);
+    formData.append('description', description);
+    formData.append('file', file);
+    formData.append('course', courseId);
+    formData.append('batch', batchId);
+    formData.append('subject', subjectId);
+    formData.append('submissionDate', submissionDate);
+    dispatch(actions.addRequest(formData));
+  };
+
+  useEffect(() => {
+    dispatch(actions.getRequest());
+  }, []);
+  useEffect(() => {
+    dispatch(courseActions.getRequest());
+  }, []);
+
+  const getSpecificSubject = (batchId) => {
+    dispatch(subjectActions.getCourseBatchRequest(courseId, batchId));
+  };
+
   return (
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
       <Wrapper padding={false}>
@@ -125,10 +125,10 @@ const AssignCourse = ({ width }) => {
                     variant="outlined"
                     InputProps={{
                       className: classes.textFieldInput,
+                      value: title,
+                      onChange: (e) => setTitle(e.target.value),
                     }}
                     className={classes.textField}
-                    value={title}
-                    onChange={(e) => setTitle(e.target.vallue)}
                   />
                 </div>
                 <div className={classes.inputContainer}>
@@ -139,10 +139,10 @@ const AssignCourse = ({ width }) => {
                     variant="outlined"
                     InputProps={{
                       className: classes.textFieldInput,
+                      value: description,
+                      onChange: (e) => setDescription(e.target.value),
                     }}
                     className={classes.textField}
-                    value={title}
-                    onChange={(e) => setTitle(e.target.vallue)}
                   />
                 </div>
                 <div className={classes.inputContainer}>
@@ -151,12 +151,11 @@ const AssignCourse = ({ width }) => {
                   </Typography>
                   <div className={classes.btnRow}>
                     <input
-                      accept="image/*"
                       className={classes.input}
                       id="fees-allocation-upload"
-                      multiple
                       type="file"
                       hidden
+                      onChange={onFileChange}
                     />
                     <label htmlFor="fees-allocation-upload">
                       <Button
@@ -169,8 +168,9 @@ const AssignCourse = ({ width }) => {
                         Choose File
                       </Button>
                     </label>
-
-                    <Typography variant="body2">No File Choosen</Typography>
+                    <Typography variant="body2">
+                      {file ? file.name : 'No File Choosen'}
+                    </Typography>
                   </div>
                 </div>
                 <div className={classes.inputContainer}>
@@ -179,14 +179,19 @@ const AssignCourse = ({ width }) => {
                   </Typography>
                   <FormControl variant="filled" className={classes.textField}>
                     <Select
-                      value={userType}
+                      value={courseId}
                       variant="outlined"
-                      onChange={(e) => setUserType(e.target.value)}
+                      onChange={(e) => {
+                        setCourseId(e.target.value);
+                        getCoursesBatch(e.target.value);
+                      }}
                       className={classes.select}
                     >
-                      <MenuItem value="india">STD I</MenuItem>
-                      <MenuItem value="australia">STD II</MenuItem>
-                      <MenuItem value="usa">STD III</MenuItem>
+                      {courses.map((item, index) => (
+                        <MenuItem value={item._id} key={index}>
+                          {item.courseName}
+                        </MenuItem>
+                      ))}
                     </Select>
                   </FormControl>
                 </div>
@@ -196,14 +201,19 @@ const AssignCourse = ({ width }) => {
                   </Typography>
                   <FormControl variant="filled" className={classes.textField}>
                     <Select
-                      value={userType}
+                      value={batchId}
                       variant="outlined"
-                      onChange={(e) => setUserType(e.target.value)}
+                      onChange={(e) => {
+                        setBatchId(e.target.value);
+                        getSpecificSubject(e.target.value);
+                      }}
                       className={classes.select}
                     >
-                      <MenuItem value="india">A</MenuItem>
-                      <MenuItem value="australia">B</MenuItem>
-                      <MenuItem value="usa">C</MenuItem>
+                      {coursesBatch.map((item, index) => (
+                        <MenuItem value={item._id} key={index}>
+                          {item.batchName}
+                        </MenuItem>
+                      ))}
                     </Select>
                   </FormControl>
                 </div>
@@ -213,14 +223,18 @@ const AssignCourse = ({ width }) => {
                   </Typography>
                   <FormControl variant="filled" className={classes.textField}>
                     <Select
-                      value={userType}
+                      value={subjectId}
                       variant="outlined"
-                      onChange={(e) => setUserType(e.target.value)}
+                      onChange={(e) => {
+                        setSubjectId(e.target.value);
+                      }}
                       className={classes.select}
                     >
-                      <MenuItem value="india">English - ENG1001</MenuItem>
-                      <MenuItem value="australia">Maths - MA1001</MenuItem>
-                      <MenuItem value="usa">GK - GK1001</MenuItem>
+                      {specificSubjects.map((item, index) => (
+                        <MenuItem value={item._id} key={index}>
+                          {item.name}
+                        </MenuItem>
+                      ))}
                     </Select>
                   </FormControl>
                 </div>
@@ -236,7 +250,7 @@ const AssignCourse = ({ width }) => {
                     margin="normal"
                     id="date-picker-inline"
                     // label="Date picker inline"
-                    value={selectedDate}
+                    value={submissionDate}
                     onChange={handleDateChange}
                     className={classes.textField}
                     KeyboardButtonProps={{
@@ -248,9 +262,14 @@ const AssignCourse = ({ width }) => {
                   variant="contained"
                   color="primary"
                   className={classes.saveBtn}
-                  startIcon={<SaveIcon />}
+                  startIcon={!isAssignmentAdding && <SaveIcon />}
+                  onClick={onSubmit}
                 >
-                  Save
+                  {isAssignmentAdding ? (
+                    <CircularProgress color="secondary" />
+                  ) : (
+                    'Save'
+                  )}
                 </Button>
               </CardContent>
             </Card>
@@ -269,15 +288,15 @@ const AssignCourse = ({ width }) => {
                     <TableCell align="right">Manage</TableCell>
                   </TableRow>
                 </TableHead>
-                <TableBody>
-                  {rows.map((row, index) => (
+                {/*  <TableBody>
+                  {list.map((row, index) => (
                     <TableRow
-                      key={row.no}
+                      key={index}
                       className={
                         index % 2 === 0 ? classes.tableRow : classes.tableHeader
                       }
                     >
-                      <TableCell component="th" scope="row">
+                       <TableCell component="th" scope="row">
                         {row.no}
                       </TableCell>
                       <TableCell align="right">{row.title}</TableCell>
@@ -289,10 +308,10 @@ const AssignCourse = ({ width }) => {
                       </TableCell>
                       <TableCell align="right">
                         <EditIcon color="primary" />
-                      </TableCell>
+                      </TableCell> 
                     </TableRow>
                   ))}
-                </TableBody>
+                </TableBody>*/}
               </Table>
             </TableContainer>
           </Grid>
@@ -302,4 +321,4 @@ const AssignCourse = ({ width }) => {
   );
 };
 
-export default AssignCourse;
+export default Assignment;

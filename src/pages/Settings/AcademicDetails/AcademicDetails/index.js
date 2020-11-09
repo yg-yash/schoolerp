@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import styles from './styles';
@@ -15,17 +15,39 @@ import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import EditIcon from '@material-ui/icons/Edit';
+import SaveIcon from '@material-ui/icons/Save';
+import * as actions from '../../../../actions/settings/academic';
+import { useDispatch, useSelector } from 'react-redux';
 
-function createData(name, calories, fat, carbs, protein, status) {
-  return { name, calories, fat, carbs, protein, status };
-}
+const years = [
+  '2010',
+  '2011',
+  '2012',
+  '2013',
+  '2014',
+  '2015',
+  '2016',
+  '2017',
+  '2018',
+  '2019',
+  '2020',
+];
 
-const rows = [
-  createData(1, 2016, 'April', 2016, 'March', 'Active'),
-  createData(2, 2016, 'April', 2017, 'Match', 'Active'),
-  createData(3, 2017, '', 2018, 'March', 'Active'),
-  createData(4, 2018, '', 2019, '', 'Active'),
+const months = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
 ];
 
 const AcademicDetails = () => {
@@ -35,6 +57,29 @@ const AcademicDetails = () => {
   const [endYear, setEndYear] = useState('');
   const [endMonth, setEndMonth] = useState('');
   const [isActivate, setIsActivate] = useState('');
+
+  const dispatch = useDispatch();
+
+  const onSubmit = () => {
+    if (!startYear || !startMonth || !endYear || !endMonth || !isActivate) {
+      return;
+    }
+    const data = {
+      startYear: parseInt(startYear),
+      startMonth: startMonth.toLowerCase(),
+      endMonth: endMonth.toLowerCase(),
+      endYear: parseInt(endYear),
+      status: isActivate.toLowerCase(),
+    };
+
+    dispatch(actions.addAcademicsRequest(data));
+  };
+  const { list, error } = useSelector((state) => state.academicReducer);
+  const { isAddAcademicLoading } = useSelector((state) => state.loadingReducer);
+
+  useEffect(() => {
+    dispatch(actions.getAcademicsRequest());
+  }, []);
 
   return (
     <Card elevation={3}>
@@ -61,9 +106,11 @@ const AcademicDetails = () => {
                     onChange={(e) => setStartYear(e.target.value)}
                     className={classes.select}
                   >
-                    <MenuItem value="india">1998</MenuItem>
-                    <MenuItem value="australia">1999</MenuItem>
-                    <MenuItem value="usa">2000</MenuItem>
+                    {years.map((item, index) => (
+                      <MenuItem value={item} key={index}>
+                        {item}
+                      </MenuItem>
+                    ))}
                   </Select>
                 </FormControl>
               </div>
@@ -78,9 +125,11 @@ const AcademicDetails = () => {
                     onChange={(e) => setStartMonth(e.target.value)}
                     className={classes.select}
                   >
-                    <MenuItem value="india">January</MenuItem>
-                    <MenuItem value="australia">February</MenuItem>
-                    <MenuItem value="usa">March</MenuItem>
+                    {months.map((item, index) => (
+                      <MenuItem value={item} index={index}>
+                        {item}
+                      </MenuItem>
+                    ))}
                   </Select>
                 </FormControl>
               </div>
@@ -95,9 +144,11 @@ const AcademicDetails = () => {
                     onChange={(e) => setEndYear(e.target.value)}
                     className={classes.select}
                   >
-                    <MenuItem value="india">1998</MenuItem>
-                    <MenuItem value="australia">1999</MenuItem>
-                    <MenuItem value="usa">2000</MenuItem>
+                    {years.map((item, index) => (
+                      <MenuItem value={item} key={index}>
+                        {item}
+                      </MenuItem>
+                    ))}
                   </Select>
                 </FormControl>
               </div>
@@ -112,9 +163,11 @@ const AcademicDetails = () => {
                     onChange={(e) => setEndMonth(e.target.value)}
                     className={classes.select}
                   >
-                    <MenuItem value="india">January</MenuItem>
-                    <MenuItem value="australia">February</MenuItem>
-                    <MenuItem value="usa">March</MenuItem>
+                    {months.map((item, index) => (
+                      <MenuItem value={item} key={index}>
+                        {item}
+                      </MenuItem>
+                    ))}
                   </Select>
                 </FormControl>
               </div>
@@ -130,17 +183,33 @@ const AcademicDetails = () => {
                     onChange={(e) => setIsActivate(e.target.value)}
                     className={classes.select}
                   >
-                    <MenuItem value="india">Activate</MenuItem>
-                    <MenuItem value="australia">Deactivate</MenuItem>
+                    <MenuItem value="active">Activate</MenuItem>
+                    <MenuItem value="deactivate">Deactivate</MenuItem>
                   </Select>
                 </FormControl>
               </div>
+              <Typography variant="body2" className={classes.errorText}>
+                {error && error.error}
+              </Typography>
               <Button
                 variant="contained"
                 color="primary"
                 className={classes.savebtn}
+                startIcon={<SaveIcon />}
+                onClick={onSubmit}
+                disable={
+                  !startYear ||
+                  !startMonth ||
+                  !endYear ||
+                  !endMonth ||
+                  !isActivate
+                }
               >
-                Save
+                {isAddAcademicLoading ? (
+                  <CircularProgress color="secondary" />
+                ) : (
+                  'Save'
+                )}
               </Button>
             </Card>
           </Grid>
@@ -159,21 +228,35 @@ const AcademicDetails = () => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {rows.map((row, index) => (
+                  {list.map((row, index) => (
                     <TableRow
                       key={row.name}
                       className={
                         index % 2 === 0 ? classes.tableRow : classes.tableHeader
                       }
                     >
-                      <TableCell component="th" scope="row">
-                        {row.name}
+                      <TableCell
+                        component="th"
+                        scope="row"
+                        className={classes.tableCell}
+                      >
+                        {index + 1}
                       </TableCell>
-                      <TableCell align="right">{row.calories}</TableCell>
-                      <TableCell align="right">{row.fat}</TableCell>
-                      <TableCell align="right">{row.carbs}</TableCell>
-                      <TableCell align="right">{row.protein}</TableCell>
-                      <TableCell align="right">{row.status}</TableCell>
+                      <TableCell align="right" className={classes.tableCell}>
+                        {row.startYear}
+                      </TableCell>
+                      <TableCell align="right" className={classes.tableCell}>
+                        {row.startMonth}
+                      </TableCell>
+                      <TableCell align="right" className={classes.tableCell}>
+                        {row.endYear}
+                      </TableCell>
+                      <TableCell align="right" className={classes.tableCell}>
+                        {row.endMonth}
+                      </TableCell>
+                      <TableCell align="right" className={classes.tableCell}>
+                        {row.status}
+                      </TableCell>
                       <TableCell align="right">
                         <EditIcon color="primary" />
                       </TableCell>

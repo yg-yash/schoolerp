@@ -16,76 +16,97 @@ import styles from './styles';
 import TextField from '@material-ui/core/TextField';
 import DateFnsUtils from '@date-io/date-fns';
 import AttachFileIcon from '@material-ui/icons/AttachFile';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import SaveIcon from '@material-ui/icons/Save';
 import {
   MuiPickersUtilsProvider,
   KeyboardDatePicker,
 } from '@material-ui/pickers';
 import 'date-fns';
+import { useSelector, useDispatch } from 'react-redux';
+import * as actions from '../../../../actions/employee';
 
-function createData(no, title, course, batch, subject, dateOfSubmission) {
-  return { no, title, course, batch, subject, dateOfSubmission };
-}
+const AddEmployee = () => {
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [middleName, setMiddleName] = useState('');
+  const [dob, setDob] = useState(new Date());
+  const [gender, setGender] = useState('male');
+  const [joiningDate, setJoiningDate] = useState(new Date());
+  const [qualification, setQualification] = useState('');
+  const [experience, setExperience] = useState('');
+  const [presentAddress, setPresentAddress] = useState('');
+  const [permanentAddress, setPermanentAddress] = useState('');
+  const [city, setCity] = useState('');
+  const [state, setState] = useState('');
+  const [country, setCountry] = useState('');
+  const [pincode, setPincode] = useState('');
+  const [phone, setPhone] = useState('');
+  const [mobile, setMobile] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [aadharNumber, setAadharNumber] = useState('');
+  const [panNumber, setPanNumber] = useState('');
+  const [pfNumber, setPfNumber] = useState('');
+  const [esi, setEsi] = useState('');
+  const [department, setDepartment] = useState('');
+  const [bankName, setBankName] = useState('');
+  const [branch, setBranch] = useState('');
+  const [bankAddress, setBankAddress] = useState('');
+  const [bankPhone, setBankPhone] = useState('');
+  const [ifsc, setIfsc] = useState('');
+  const [accountNumber, setAccountNumber] = useState('');
+  const [ddPayableAddress, setddPayableAddress] = useState('');
+  const [code, setCode] = useState('');
+  const [file, setFile] = useState(null);
 
-const rows = [
-  createData(
-    1,
-    'testdyhuug',
-    'STD II',
-    'A',
-    'English-ENG1001',
-    'e1001-Malavika S Pillai'
-  ),
-  createData(
-    2,
-    'Maths asssignment 4',
-    'STD II',
-    'A',
-    'Maths-ENG1001',
-    'e1001- Malavika S Pillai'
-  ),
-];
-
-const AssignCourse = ({ width }) => {
-  const [userType, setUserType] = useState('');
-  const [checked, setChecked] = React.useState([0]);
-  const [title, setTitle] = useState('');
-  const [list, setList] = useState([
-    'STD I',
-    'STD II',
-    'STD III',
-    'STD IV',
-    'STD V',
-    'STD VI',
-    'STD VII',
-    'STD VIII',
-    'STD IX',
-    'STD X',
-    'STD XI',
-    'STD XII',
-  ]);
-
-  const [selectedDate, setSelectedDate] = React.useState(
-    new Date('2014-08-18T21:11:54')
-  );
-
-  const handleDateChange = (date) => {
-    setSelectedDate(date);
-  };
-
-  const handleToggle = (value) => () => {
-    const currentIndex = checked.indexOf(value);
-    const newChecked = [...checked];
-
-    if (currentIndex === -1) {
-      newChecked.push(value);
-    } else {
-      newChecked.splice(currentIndex, 1);
-    }
-
-    setChecked(newChecked);
-  };
+  const { isEmployeeAdding } = useSelector((state) => state.loadingReducer);
+  // const { error } = useSelector((state) => state.employeeReducer);
 
   const classes = styles();
+  const onFileChange = (event) => {
+    setFile(event.target.files[0]);
+  };
+
+  const dispatch = useDispatch();
+
+  const onSubmit = () => {
+    const formData = new FormData();
+    formData.append('firstName', firstName);
+    formData.append('middleName', middleName);
+    formData.append('lastName', lastName);
+    formData.append('dob', dob);
+    formData.append('gender', gender);
+    formData.append('joiningDate', joiningDate);
+    formData.append('qualification', qualification);
+    formData.append('experience', experience);
+    formData.append('presentAddress', presentAddress);
+    formData.append('permanentAddress', permanentAddress);
+    formData.append('city', city);
+    formData.append('state', state);
+    formData.append("department", department);
+    formData.append('country', country);
+    formData.append('pincode', Number(pincode));
+    formData.append('phone', Number(phone));
+    formData.append('mobile', Number(mobile));
+    formData.append('email', email);
+    formData.append('password', password);
+    formData.append('addharNumber', Number(aadharNumber));
+    formData.append('panNumber', Number(panNumber));
+    formData.append('pfNumber', Number(pfNumber));
+    formData.append('esi', esi);
+    formData.append('bankName', bankName);
+    formData.append('branch', branch);
+    formData.append('bankAddress', bankAddress);
+    formData.append('bankPhone', bankPhone);
+    formData.append('ifsc', ifsc);
+    formData.append('accountNumber', Number(accountNumber));
+    formData.append('ddPayableAddress', ddPayableAddress);
+    formData.append('code', Number(code));
+    formData.append('file', file);
+    dispatch(actions.addRequest(formData));
+  };
+
   return (
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
       <Wrapper padding={false}>
@@ -134,8 +155,8 @@ const AssignCourse = ({ width }) => {
                           className: classes.textFieldInput,
                         }}
                         className={classes.textField}
-                        value={title}
-                        onChange={(e) => setTitle(e.target.vallue)}
+                        value={code}
+                        onChange={(e) => setCode(e.target.value)}
                       />
                     </div>
                     <div className={`${classes.inputContainer}`}>
@@ -149,8 +170,8 @@ const AssignCourse = ({ width }) => {
                         format="MM/dd/yyyy"
                         margin="normal"
                         id="date-picker-inline"
-                        value={selectedDate}
-                        onChange={handleDateChange}
+                        value={joiningDate}
+                        onChange={(e) => setJoiningDate(e)}
                         className={classes.textField}
                         KeyboardButtonProps={{
                           'aria-label': 'change date',
@@ -161,45 +182,15 @@ const AssignCourse = ({ width }) => {
                       <Typography variant="body2">
                         Department <span className={classes.required}>*</span>
                       </Typography>
-                      <FormControl
-                        variant="filled"
+                      <TextField
+                        variant="outlined"
+                        InputProps={{
+                          className: classes.textFieldInput,
+                        }}
                         className={classes.textField}
-                      >
-                        <Select
-                          value={userType}
-                          variant="outlined"
-                          onChange={(e) => setUserType(e.target.value)}
-                          className={classes.select}
-                        >
-                          <MenuItem value="india">English - ENG1001</MenuItem>
-                          <MenuItem value="australia">GK - GK1001</MenuItem>
-                          <MenuItem value="australia">
-                            Chemistry - CH1001
-                          </MenuItem>
-                        </Select>
-                      </FormControl>
-                    </div>
-                    <div className={classes.inputContainer}>
-                      <Typography variant="body2">
-                        Designation <span className={classes.required}>*</span>
-                      </Typography>
-                      <FormControl
-                        variant="filled"
-                        className={classes.textField}
-                      >
-                        <Select
-                          value={userType}
-                          variant="outlined"
-                          onChange={(e) => setUserType(e.target.value)}
-                          className={classes.select}
-                        >
-                          <MenuItem value="india">English - ENG1001</MenuItem>
-                          <MenuItem value="australia">GK - GK1001</MenuItem>
-                          <MenuItem value="australia">
-                            Chemistry - CH1001
-                          </MenuItem>
-                        </Select>
-                      </FormControl>
+                        value={department}
+                        onChange={(e) => setDepartment(e.target.value)}
+                      />
                     </div>
                     <div className={classes.inputContainer}>
                       <Typography variant="body2">
@@ -212,8 +203,8 @@ const AssignCourse = ({ width }) => {
                           className: classes.textFieldInput,
                         }}
                         className={classes.textField}
-                        value={title}
-                        onChange={(e) => setTitle(e.target.vallue)}
+                        value={qualification}
+                        onChange={(e) => setQualification(e.target.value)}
                       />
                     </div>
                     <div className={classes.inputContainer}>
@@ -227,11 +218,11 @@ const AssignCourse = ({ width }) => {
                           className: classes.textFieldInput,
                         }}
                         className={classes.textField}
-                        value={title}
-                        onChange={(e) => setTitle(e.target.vallue)}
+                        value={experience}
+                        onChange={(e) => setExperience(e.target.value)}
                       />
                     </div>
-                    <div className={classes.inputContainer}>
+                    {/* <div className={classes.inputContainer}>
                       <Typography variant="body2">
                         User Type <span className={classes.required}>*</span>
                       </Typography>
@@ -252,7 +243,7 @@ const AssignCourse = ({ width }) => {
                           </MenuItem>
                         </Select>
                       </FormControl>
-                    </div>
+                    </div> */}
                   </CardContent>
                 </Card>
               </Grid>
@@ -288,8 +279,8 @@ const AssignCourse = ({ width }) => {
                             className: classes.textFieldInput,
                           }}
                           className={classes.textField}
-                          value={title}
-                          onChange={(e) => setTitle(e.target.vallue)}
+                          value={firstName}
+                          onChange={(e) => setFirstName(e.target.value)}
                         />
                       </div>
                       <div className={classes.inputContainer}>
@@ -303,8 +294,8 @@ const AssignCourse = ({ width }) => {
                             className: classes.textFieldInput,
                           }}
                           className={classes.textField}
-                          value={title}
-                          onChange={(e) => setTitle(e.target.vallue)}
+                          value={middleName}
+                          onChange={(e) => setMiddleName(e.target.value)}
                         />
                       </div>
                       <div className={classes.inputContainer}>
@@ -318,8 +309,8 @@ const AssignCourse = ({ width }) => {
                             className: classes.textFieldInput,
                           }}
                           className={classes.textField}
-                          value={title}
-                          onChange={(e) => setTitle(e.target.vallue)}
+                          value={lastName}
+                          onChange={(e) => setLastName(e.target.value)}
                         />
                       </div>
                       <div className={`${classes.inputContainer}`}>
@@ -333,8 +324,8 @@ const AssignCourse = ({ width }) => {
                           format="MM/dd/yyyy"
                           margin="normal"
                           id="date-picker-inline"
-                          value={selectedDate}
-                          onChange={handleDateChange}
+                          value={dob}
+                          onChange={(e) => setDob(dob)}
                           className={classes.textField}
                           KeyboardButtonProps={{
                             'aria-label': 'change date',
@@ -350,18 +341,31 @@ const AssignCourse = ({ width }) => {
                           className={classes.textField}
                         >
                           <Select
-                            value={userType}
+                            value={gender}
                             variant="outlined"
-                            onChange={(e) => setUserType(e.target.value)}
+                            onChange={(e) => setGender(e.target.value)}
                             className={classes.select}
                           >
-                            <MenuItem value="india">English - ENG1001</MenuItem>
-                            <MenuItem value="australia">GK - GK1001</MenuItem>
-                            <MenuItem value="australia">
-                              Chemistry - CH1001
-                            </MenuItem>
+                            <MenuItem value="male">Male</MenuItem>
+                            <MenuItem value="female">Female</MenuItem>
+                            <MenuItem value="other">Other</MenuItem>
                           </Select>
                         </FormControl>
+                      </div>
+                      <div className={classes.inputContainer}>
+                        <Typography variant="body2">
+                          Aadhar Card Number
+                          <span className={classes.required}>*</span>
+                        </Typography>
+                        <TextField
+                          variant="outlined"
+                          InputProps={{
+                            className: classes.textFieldInput,
+                          }}
+                          className={classes.textField}
+                          value={aadharNumber}
+                          onChange={(e) => setAadharNumber(e.target.value)}
+                        />
                       </div>
                       <div className={classes.inputContainer}>
                         <Typography variant="body2">
@@ -374,8 +378,8 @@ const AssignCourse = ({ width }) => {
                             className: classes.textFieldInput,
                           }}
                           className={classes.textField}
-                          value={title}
-                          onChange={(e) => setTitle(e.target.vallue)}
+                          value={panNumber}
+                          onChange={(e) => setPanNumber(e.target.value)}
                         />
                       </div>
                       <div className={classes.inputContainer}>
@@ -389,23 +393,8 @@ const AssignCourse = ({ width }) => {
                             className: classes.textFieldInput,
                           }}
                           className={classes.textField}
-                          value={title}
-                          onChange={(e) => setTitle(e.target.vallue)}
-                        />
-                      </div>
-                      <div className={classes.inputContainer}>
-                        <Typography variant="body2">
-                          Professional Tax Account No
-                          <span className={classes.required}>*</span>
-                        </Typography>
-                        <TextField
-                          variant="outlined"
-                          InputProps={{
-                            className: classes.textFieldInput,
-                          }}
-                          className={classes.textField}
-                          value={title}
-                          onChange={(e) => setTitle(e.target.vallue)}
+                          value={pfNumber}
+                          onChange={(e) => setPfNumber(e.target.value)}
                         />
                       </div>
                       <div className={classes.inputContainer}>
@@ -419,8 +408,113 @@ const AssignCourse = ({ width }) => {
                             className: classes.textFieldInput,
                           }}
                           className={classes.textField}
-                          value={title}
-                          onChange={(e) => setTitle(e.target.vallue)}
+                          value={esi}
+                          onChange={(e) => setEsi(e.target.value)}
+                        />
+                      </div>
+                      <div className={classes.inputContainer}>
+                        <Typography variant="body2">
+                          Bank Name
+                          <span className={classes.required}>*</span>
+                        </Typography>
+                        <TextField
+                          variant="outlined"
+                          InputProps={{
+                            className: classes.textFieldInput,
+                          }}
+                          className={classes.textField}
+                          value={bankName}
+                          onChange={(e) => setBankName(e.target.value)}
+                        />
+                      </div>
+                      <div className={classes.inputContainer}>
+                        <Typography variant="body2">
+                          Bank Address
+                          <span className={classes.required}>*</span>
+                        </Typography>
+                        <TextField
+                          variant="outlined"
+                          InputProps={{
+                            className: classes.textFieldInput,
+                          }}
+                          className={classes.textField}
+                          value={bankAddress}
+                          onChange={(e) => setBankAddress(e.target.value)}
+                        />
+                      </div>
+                      <div className={classes.inputContainer}>
+                        <Typography variant="body2">
+                          Branch
+                          <span className={classes.required}>*</span>
+                        </Typography>
+                        <TextField
+                          variant="outlined"
+                          InputProps={{
+                            className: classes.textFieldInput,
+                          }}
+                          className={classes.textField}
+                          value={branch}
+                          onChange={(e) => setBranch(e.target.value)}
+                        />
+                      </div>
+                      <div className={classes.inputContainer}>
+                        <Typography variant="body2">
+                          Bank Phone
+                          <span className={classes.required}>*</span>
+                        </Typography>
+                        <TextField
+                          variant="outlined"
+                          InputProps={{
+                            className: classes.textFieldInput,
+                          }}
+                          className={classes.textField}
+                          value={bankPhone}
+                          onChange={(e) => setBankPhone(e.target.value)}
+                        />
+                      </div>
+                      <div className={classes.inputContainer}>
+                        <Typography variant="body2">
+                          IFSC
+                          <span className={classes.required}>*</span>
+                        </Typography>
+                        <TextField
+                          variant="outlined"
+                          InputProps={{
+                            className: classes.textFieldInput,
+                          }}
+                          className={classes.textField}
+                          value={ifsc}
+                          onChange={(e) => setIfsc(e.target.value)}
+                        />
+                      </div>
+                      <div className={classes.inputContainer}>
+                        <Typography variant="body2">
+                          Account Number
+                          <span className={classes.required}>*</span>
+                        </Typography>
+                        <TextField
+                          variant="outlined"
+                          InputProps={{
+                            className: classes.textFieldInput,
+                          }}
+                          className={classes.textField}
+                          value={accountNumber}
+                          onChange={(e) => setAccountNumber(e.target.value)}
+                        />
+                      </div>
+                      <div className={classes.inputContainer}>
+                        <Typography variant="body2">
+                          DD Payable Address
+                          <span className={classes.required}>*</span>
+                        </Typography>
+                        <TextField
+                          variant="outlined"
+                          InputProps={{
+                            className: classes.textFieldInput,
+                          }}
+                          className={classes.textField}
+                          value={ddPayableAddress}
+                          onChange={(e) => setddPayableAddress(e.target.value)}
                         />
                       </div>
                     </CardContent>
@@ -451,8 +545,8 @@ const AssignCourse = ({ width }) => {
                             className: classes.textFieldInput,
                           }}
                           className={classes.textField}
-                          value={title}
-                          onChange={(e) => setTitle(e.target.vallue)}
+                          value={presentAddress}
+                          onChange={(e) => setPresentAddress(e.target.value)}
                         />
                       </div>
                       <div className={classes.inputContainer}>
@@ -466,8 +560,8 @@ const AssignCourse = ({ width }) => {
                             className: classes.textFieldInput,
                           }}
                           className={classes.textField}
-                          value={title}
-                          onChange={(e) => setTitle(e.target.vallue)}
+                          value={permanentAddress}
+                          onChange={(e) => setPermanentAddress(e.target.value)}
                         />
                       </div>
                       <div className={classes.inputContainer}>
@@ -481,13 +575,13 @@ const AssignCourse = ({ width }) => {
                             className: classes.textFieldInput,
                           }}
                           className={classes.textField}
-                          value={title}
-                          onChange={(e) => setTitle(e.target.vallue)}
+                          value={city}
+                          onChange={(e) => setCity(e.target.value)}
                         />
                       </div>
                       <div className={classes.inputContainer}>
                         <Typography variant="body2">
-                          Pin
+                          Pincode
                           <span className={classes.required}>*</span>
                         </Typography>
                         <TextField
@@ -496,8 +590,8 @@ const AssignCourse = ({ width }) => {
                             className: classes.textFieldInput,
                           }}
                           className={classes.textField}
-                          value={title}
-                          onChange={(e) => setTitle(e.target.vallue)}
+                          value={pincode}
+                          onChange={(e) => setPincode(e.target.value)}
                         />
                       </div>
                       <div className={classes.inputContainer}>
@@ -509,16 +603,12 @@ const AssignCourse = ({ width }) => {
                           className={classes.textField}
                         >
                           <Select
-                            value={userType}
+                            value={country}
                             variant="outlined"
-                            onChange={(e) => setUserType(e.target.value)}
+                            onChange={(e) => setCountry(e.target.value)}
                             className={classes.select}
                           >
-                            <MenuItem value="india">English - ENG1001</MenuItem>
-                            <MenuItem value="australia">GK - GK1001</MenuItem>
-                            <MenuItem value="australia">
-                              Chemistry - CH1001
-                            </MenuItem>
+                            <MenuItem value="india">India</MenuItem>
                           </Select>
                         </FormControl>
                       </div>
@@ -531,16 +621,14 @@ const AssignCourse = ({ width }) => {
                           className={classes.textField}
                         >
                           <Select
-                            value={userType}
+                            value={state}
                             variant="outlined"
-                            onChange={(e) => setUserType(e.target.value)}
+                            onChange={(e) => setState(e.target.value)}
                             className={classes.select}
                           >
-                            <MenuItem value="india">English - ENG1001</MenuItem>
-                            <MenuItem value="australia">GK - GK1001</MenuItem>
-                            <MenuItem value="australia">
-                              Chemistry - CH1001
-                            </MenuItem>
+                            <MenuItem value="delhi">Delhi</MenuItem>
+                            <MenuItem value="maharashtra">Mahrashtra</MenuItem>
+                            <MenuItem value="gujrat">Gujarat</MenuItem>
                           </Select>
                         </FormControl>
                       </div>
@@ -555,8 +643,8 @@ const AssignCourse = ({ width }) => {
                             className: classes.textFieldInput,
                           }}
                           className={classes.textField}
-                          value={title}
-                          onChange={(e) => setTitle(e.target.vallue)}
+                          value={phone}
+                          onChange={(e) => setPhone(e.target.value)}
                         />
                       </div>
                       <div className={classes.inputContainer}>
@@ -570,31 +658,37 @@ const AssignCourse = ({ width }) => {
                             className: classes.textFieldInput,
                           }}
                           className={classes.textField}
-                          value={title}
-                          onChange={(e) => setTitle(e.target.vallue)}
+                          value={mobile}
+                          onChange={(e) => setMobile(e.target.value)}
                         />
                       </div>
                       <div className={classes.inputContainer}>
                         <Typography variant="body2">
                           Email <span className={classes.required}>*</span>
                         </Typography>
-                        <FormControl
-                          variant="filled"
+                        <TextField
+                          variant="outlined"
+                          InputProps={{
+                            className: classes.textFieldInput,
+                          }}
                           className={classes.textField}
-                        >
-                          <Select
-                            value={userType}
-                            variant="outlined"
-                            onChange={(e) => setUserType(e.target.value)}
-                            className={classes.select}
-                          >
-                            <MenuItem value="india">English - ENG1001</MenuItem>
-                            <MenuItem value="australia">GK - GK1001</MenuItem>
-                            <MenuItem value="australia">
-                              Chemistry - CH1001
-                            </MenuItem>
-                          </Select>
-                        </FormControl>
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                        />
+                      </div>
+                      <div className={classes.inputContainer}>
+                        <Typography variant="body2">
+                          Password <span className={classes.required}>*</span>
+                        </Typography>
+                        <TextField
+                          variant="outlined"
+                          InputProps={{
+                            className: classes.textFieldInput,
+                          }}
+                          className={classes.textField}
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                        />
                       </div>
                       <div className={classes.inputContainer}>
                         <Typography variant="body2">
@@ -606,9 +700,9 @@ const AssignCourse = ({ width }) => {
                             accept="image/*"
                             className={classes.input}
                             id="fees-allocation-upload"
-                            multiple
                             type="file"
                             hidden
+                            onChange={onFileChange}
                           />
                           <label htmlFor="fees-allocation-upload">
                             <Button
@@ -621,9 +715,8 @@ const AssignCourse = ({ width }) => {
                               Choose File
                             </Button>
                           </label>
-
                           <Typography variant="body2">
-                            No File Choosen
+                            {file ? file.name : 'No File Choosen'}
                           </Typography>
                         </div>
                       </div>
@@ -632,6 +725,19 @@ const AssignCourse = ({ width }) => {
                 </Grid>
               </Grid>
             </CardContent>
+            <Button
+              variant="contained"
+              color="primary"
+              className={classes.saveBtn}
+              startIcon={!isEmployeeAdding && <SaveIcon />}
+              onClick={onSubmit}
+            >
+              {isEmployeeAdding ? (
+                <CircularProgress color="secondary" />
+              ) : (
+                'Save'
+              )}
+            </Button>
           </Card>
         </Grid>
       </Wrapper>
@@ -639,4 +745,4 @@ const AssignCourse = ({ width }) => {
   );
 };
 
-export default AssignCourse;
+export default AddEmployee;

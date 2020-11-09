@@ -1,5 +1,5 @@
 import { Header, NotificationCenter, Sidebar, Workspace } from '../components';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Redirect, Route, Switch } from 'react-router-dom';
 
 import FormatTextdirectionLToRIcon from '@material-ui/icons/FormatTextdirectionLToR';
@@ -16,6 +16,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import routes from '../routes';
 import { useAppState } from '../components/AppProvider/AppProvider';
 import useMountEffect from '../mountEffect';
+import { useSelector, useDispatch } from 'react-redux';
+import * as adminActons from '../actions/admin';
 
 const useStyles = makeStyles((theme) => ({
   panel: {
@@ -65,6 +67,11 @@ const Dashboard = ({ history }) => {
       window.dispatchEvent(evt);
     }
   };
+  const myDispatch = useDispatch();
+  useEffect(() => {
+    const token = localStorage.getItem('erpToken');
+    myDispatch(adminActons.requestAdmin(token));
+  }, []);
 
   const handleDrawerToggle = () => {
     setOpened(!opened);

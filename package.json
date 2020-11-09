@@ -5,7 +5,7 @@
   "devDependencies": {
     "concurrently": "5.1.0"
   },
-  "proxy": "https://erpschool.herokuapp.com",
+  "proxy": "http://ec2-13-127-190-204.ap-south-1.compute.amazonaws.com:8080",
   "dependencies": {
     "@date-io/date-fns": "1.x",
     "@material-ui/core": "4.9.4",
