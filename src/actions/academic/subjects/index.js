@@ -84,7 +84,7 @@ export function getCourseBatchFailed(error) {
     error,
   };
 }
-export function getRequest(courseId, batchId) {
+export function getRequest() {
   return {
     type: types.GET_ALL_SUBJECTS_REQUEST,
   };
@@ -100,6 +100,26 @@ export function getResponse(data) {
 export function getFailed(error) {
   return {
     type: types.GET_ALL_SUBJECTS_FAILED,
+    error,
+  };
+}
+export function allocateRequest(data) {
+  return {
+    type: types.ALLOCATE_SUBJECT_REQUEST,
+    data,
+  };
+}
+
+export function allocateResponse(data) {
+  return {
+    type: types.ALLOCATE_SUBJECT_RESPONSE,
+    data,
+  };
+}
+
+export function allocateFailed(error) {
+  return {
+    type: types.ALLOCATE_SUBJECT_FAILED,
     error,
   };
 }

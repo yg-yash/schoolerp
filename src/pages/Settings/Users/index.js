@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import AppBar from '@material-ui/core/AppBar';
 import Button from '@material-ui/core/Button';
 import ArrowRight from '@material-ui/icons/ArrowRight';
@@ -21,7 +21,9 @@ import TableRow from '@material-ui/core/TableRow';
 import Radio from '@material-ui/core/Radio';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import SendIcon from '@material-ui/icons/Send';
-
+import * as departmentAction from '../../../actions/departments';
+import * as usersAction from '../../../actions/settings/users';
+import { useDispatch, useSelector } from 'react-redux';
 import styles from './styles';
 
 function createData(name, calories, fat) {
@@ -33,8 +35,21 @@ const rows = [
   createData(1, 'Amit T', 'Twewdsaqw'),
 ];
 
-const AssignCourse = ({ width }) => {
+const AssignCourse = () => {
   const [userType, setUserType] = useState('');
+
+  const { list } = useSelector((state) => state.departmentReducer);
+  const { users } = useSelector((state) => state.usersReducer);
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(departmentAction.getRequest());
+  }, []);
+
+  const getUsers = (id) => {
+    dispatch(usersAction.getRequest(id));
+  };
 
   const classes = styles();
   return (
@@ -59,7 +74,7 @@ const AssignCourse = ({ width }) => {
             />
             <CardContent className={classes.topCard}>
               <div className={classes.row}>
-                <div className={classes.inputContainer}>
+                {/* <div className={classes.inputContainer}>
                   <Typography variant="body2">
                     Users <span className={classes.required}>*</span>
                   </Typography>
@@ -75,7 +90,7 @@ const AssignCourse = ({ width }) => {
                       <MenuItem value="usa">Teacher</MenuItem>
                     </Select>
                   </FormControl>
-                </div>
+                </div> */}
                 <div className={classes.inputContainer}>
                   <Typography variant="body2">
                     Department <span className={classes.required}>*</span>
@@ -85,12 +100,16 @@ const AssignCourse = ({ width }) => {
                     <Select
                       value={userType}
                       variant="outlined"
-                      onChange={(e) => setUserType(e.target.value)}
+                      onChange={(e) => {
+                        setUserType(e.target.value);
+                        getUsers(e.target.value);
+                      }}
                       className={classes.select}
                     >
-                      <MenuItem value="india">Science Department</MenuItem>
-                      <MenuItem value="australia">Guradian</MenuItem>
-                      <MenuItem value="usa">Teacher</MenuItem>
+                      {list &&
+                        list.map((item, index) => (
+                          <MenuItem value={item._id}>{item.name}</MenuItem>
+                        ))}
                     </Select>
                   </FormControl>
                 </div>
@@ -128,27 +147,28 @@ const AssignCourse = ({ width }) => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {rows.map((row, index) => (
-                  <TableRow
-                    key={row.name}
-                    className={
-                      index % 2 === 0 ? classes.tableRow : classes.tableHeader
-                    }
-                  >
-                    <TableCell component="th" scope="row">
-                      {row.name}
-                    </TableCell>
-                    <TableCell>{row.calories}</TableCell>
-                    <TableCell>{row.fat}</TableCell>
-                    <TableCell>
-                      <FormControlLabel
-                        value="reset"
-                        control={<Radio />}
-                        label="Reset"
-                      />
-                    </TableCell>
-                  </TableRow>
-                ))}
+                {users &&
+                  users.map((row, index) => (
+                    <TableRow
+                      key={index}
+                      className={
+                        index % 2 === 0 ? classes.tableRow : classes.tableHeader
+                      }
+                    >
+                      <TableCell component="th" scope="row">
+                        {row.code}
+                      </TableCell>
+                      <TableCell>{row.firstName}</TableCell>
+                      <TableCell>{row.email}</TableCell>
+                      <TableCell>
+                        <FormControlLabel
+                          value="reset"
+                          control={<Radio />}
+                          label="Reset"
+                        />
+                      </TableCell>
+                    </TableRow>
+                  ))}
               </TableBody>
             </Table>
           </TableContainer>

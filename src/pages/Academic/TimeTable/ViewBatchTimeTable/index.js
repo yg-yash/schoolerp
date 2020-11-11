@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import AppBar from '@material-ui/core/AppBar';
 import Button from '@material-ui/core/Button';
 import ArrowRight from '@material-ui/icons/ArrowRight';
@@ -19,6 +19,10 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import styles from './styles';
+import { useDispatch, useSelector } from 'react-redux';
+import * as courseActions from '../../../../actions/course';
+import * as batchActions from '../../../../actions/batch';
+import * as actions from '../../../../actions/timetable';
 
 function createData(
   name,
@@ -97,7 +101,25 @@ const rows = [
 
 const AssignCourse = ({ width }) => {
   const [userType, setUserType] = useState('');
+  const [courseId, setCourseId] = useState('');
+  const [batchId, setBatchId] = useState('');
 
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(courseActions.getRequest());
+  }, []);
+
+  const { courses } = useSelector((state) => state.couseReducer);
+  const { coursesBatch } = useSelector((state) => state.batchReducer);
+  const { timetable } = useSelector((state) => state.timetableReducer);
+  const getCoursesBatch = (id) => {
+    dispatch(batchActions.getCourseBatchRequest(id));
+  };
+  const getTimetables = (id) => {
+    dispatch(actions.getNamesRequest(courseId, id));
+  };
+
+  console.log(timetable);
   const classes = styles();
   return (
     <Wrapper padding={false}>
@@ -129,14 +151,19 @@ const AssignCourse = ({ width }) => {
                   </Typography>
                   <FormControl variant="filled" className={classes.textField}>
                     <Select
-                      value={userType}
+                      value={courseId}
                       variant="outlined"
-                      onChange={(e) => setUserType(e.target.value)}
+                      onChange={(e) => {
+                        setCourseId(e.target.value);
+                        getCoursesBatch(e.target.value);
+                      }}
                       className={classes.select}
                     >
-                      <MenuItem value="india">STD I_cgpa</MenuItem>
-                      <MenuItem value="australia">STD II_gpa</MenuItem>
-                      <MenuItem value="usa">STD III_gpar</MenuItem>
+                      {courses.map((item, index) => (
+                        <MenuItem value={item._id} key={index}>
+                          {item.courseName}
+                        </MenuItem>
+                      ))}
                     </Select>
                   </FormControl>
                 </div>
@@ -147,14 +174,19 @@ const AssignCourse = ({ width }) => {
 
                   <FormControl variant="filled" className={classes.textField}>
                     <Select
-                      value={userType}
+                      value={batchId}
                       variant="outlined"
-                      onChange={(e) => setUserType(e.target.value)}
+                      onChange={(e) => {
+                        getTimetables(e.target.value);
+                        setBatchId(e.target.value);
+                      }}
                       className={classes.select}
                     >
-                      <MenuItem value="india">A</MenuItem>
-                      <MenuItem value="australia">B</MenuItem>
-                      <MenuItem value="usa">C</MenuItem>
+                      {coursesBatch.map((item, index) => (
+                        <MenuItem value={item._id} key={index}>
+                          {item.batchName}
+                        </MenuItem>
+                      ))}
                     </Select>
                   </FormControl>
                 </div>
@@ -169,9 +201,11 @@ const AssignCourse = ({ width }) => {
                       onChange={(e) => setUserType(e.target.value)}
                       className={classes.select}
                     >
-                      <MenuItem value="india">STD I_gpa</MenuItem>
-                      <MenuItem value="australia">STD II_gpa</MenuItem>
-                      <MenuItem value="usa">STD III_gpa</MenuItem>
+                      {timetable.map((item, index) => (
+                        <MenuItem value={item._id} key={index}>
+                          {item.name}
+                        </MenuItem>
+                      ))}
                     </Select>
                   </FormControl>
                 </div>
@@ -210,7 +244,7 @@ const AssignCourse = ({ width }) => {
               <TableBody>
                 {rows.map((row, index) => (
                   <TableRow
-                    key={row.name}
+                    key={index}
                     className={
                       index % 2 === 0 ? classes.tableRow : classes.tableHeader
                     }

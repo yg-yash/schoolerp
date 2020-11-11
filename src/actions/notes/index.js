@@ -13,10 +13,10 @@ export function getFailed(error) {
   };
 }
 
-export function getResponse(response) {
+export function getResponse(data) {
   return {
     type: types.GET_NOTE_RESPONSE,
-    response,
+    data,
   };
 }
 export function addRequest(data) {

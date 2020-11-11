@@ -61,6 +61,7 @@ const AddEmployee = () => {
   const [file, setFile] = useState(null);
 
   const { isEmployeeAdding } = useSelector((state) => state.loadingReducer);
+  const { list } = useSelector((state) => state.departmentReducer);
   // const { error } = useSelector((state) => state.employeeReducer);
 
   const classes = styles();
@@ -84,7 +85,7 @@ const AddEmployee = () => {
     formData.append('permanentAddress', permanentAddress);
     formData.append('city', city);
     formData.append('state', state);
-    formData.append("department", department);
+    formData.append('department', department);
     formData.append('country', country);
     formData.append('pincode', Number(pincode));
     formData.append('phone', Number(phone));
@@ -182,15 +183,21 @@ const AddEmployee = () => {
                       <Typography variant="body2">
                         Department <span className={classes.required}>*</span>
                       </Typography>
-                      <TextField
-                        variant="outlined"
-                        InputProps={{
-                          className: classes.textFieldInput,
-                        }}
+                      <FormControl
+                        variant="filled"
                         className={classes.textField}
-                        value={department}
-                        onChange={(e) => setDepartment(e.target.value)}
-                      />
+                      >
+                        <Select
+                          value={department}
+                          variant="outlined"
+                          onChange={(e) => setDepartment(e.target.value)}
+                          className={classes.select}
+                        >
+                          {list.map((item, index) => (
+                            <MenuItem value={item._id}>{item.name}</MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
                     </div>
                     <div className={classes.inputContainer}>
                       <Typography variant="body2">

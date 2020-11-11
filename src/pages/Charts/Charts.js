@@ -6,7 +6,7 @@ import {
   Line,
   Pie,
   Polar,
-  Radar
+  Radar,
 } from 'react-chartjs-2';
 
 import Card from '@material-ui/core/Card';

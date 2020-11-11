@@ -65,4 +65,22 @@ export const subjectReducer = createReducer(initialState, {
       error: action.error,
     };
   },
+  [types.ALLOCATE_SUBJECT_REQUEST](state) {
+    return {
+      ...state,
+      error: '',
+    };
+  },
+  [types.ALLOCATE_SUBJECT_RESPONSE](state) {
+    return {
+      ...state,
+      error: '',
+    };
+  },
+  [types.ALLOCATE_SUBJECT_FAILED](state, action) {
+    return {
+      ...state,
+      error: action.error,
+    };
+  },
 });

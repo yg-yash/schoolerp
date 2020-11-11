@@ -118,6 +118,12 @@ const useStyles = makeStyles((theme) => {
       marginTop: 10,
       marginLeft: 10,
     },
+    errorText: {
+      color: 'red',
+      marginTop: 5,
+      fontWeight: 600,
+      textAlign: 'center',
+    },
   };
 });
 

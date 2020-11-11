@@ -32,7 +32,6 @@ import * as actions from '../../../../actions/notes';
 import * as subjectActions from '../../../../actions/academic/subjects';
 
 const AssignCourse = ({ width }) => {
-  const [userType, setUserType] = useState('');
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [file, setFile] = useState('');
@@ -51,7 +50,7 @@ const AssignCourse = ({ width }) => {
 
   const { courses } = useSelector((state) => state.couseReducer);
   const { coursesBatch } = useSelector((state) => state.batchReducer);
-  const { list } = useSelector((state) => state.assignmentReducer);
+  const { list } = useSelector((state) => state.noteReducer);
   const { isNoteAdding } = useSelector((state) => state.loadingReducer);
   const { specificSubjects } = useSelector((state) => state.subjectReducer);
 
@@ -75,6 +74,7 @@ const AssignCourse = ({ width }) => {
   useEffect(() => {
     dispatch(actions.getRequest());
   }, []);
+
   useEffect(() => {
     dispatch(courseActions.getRequest());
   }, []);
@@ -257,26 +257,29 @@ const AssignCourse = ({ width }) => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {list.map((row, index) => (
-                  <TableRow
-                    key={row.no}
-                    className={
-                      index % 2 === 0 ? classes.tableRow : classes.tableHeader
-                    }
-                  >
-                    <TableCell component="th" scope="row">
-                      {row.no}
-                    </TableCell>
-                    <TableCell align="right">{row.title}</TableCell>
-                    <TableCell align="right">{row.course}</TableCell>
-                    <TableCell align="right">{row.batch}</TableCell>
-                    <TableCell align="right">{row.subject}</TableCell>
-                    <TableCell align="right">{row.dateOfSubmission}</TableCell>
-                    <TableCell align="right">
-                      <EditIcon color="primary" />
-                    </TableCell>
-                  </TableRow>
-                ))}
+                {list &&
+                  list.map((row, index) => (
+                    <TableRow
+                      key={index}
+                      className={
+                        index % 2 === 0 ? classes.tableRow : classes.tableHeader
+                      }
+                    >
+                      <TableCell component="th" scope="row">
+                        {index  +1}
+                      </TableCell>
+                      <TableCell align="right">{row.title}</TableCell>
+                      <TableCell align="right">{row.course}</TableCell>
+                      <TableCell align="right">{row.batch}</TableCell>
+                      <TableCell align="right">{row.subject}</TableCell>
+                      <TableCell align="right">
+                        {row.dateOfSubmission}
+                      </TableCell>
+                      <TableCell align="right">
+                        <EditIcon color="primary" />
+                      </TableCell>
+                    </TableRow>
+                  ))}
               </TableBody>
             </Table>
           </TableContainer>

@@ -10,13 +10,24 @@ import {
   getSpecificSaga,
   getSubjectsSaga,
   assignSubjectSaga,
+  allocateSubjectsSaga,
 } from './academics/subject';
 import { addAssignmentSaga, getAssignmentsSaga } from './academics/assignment';
 import { addNoteSaga, getNoteSaga } from './academics/note';
-import { addTimeTableSaga } from './academics/timetable';
+import {
+  addTimeTableSaga,
+  getTimetableSaga,
+  getTimetableNamesSaga,
+} from './academics/timetable';
 import { addClassTeacherSaga } from './academics/classTeacher';
 import { getTeachersSaga } from './teachers';
 import { addEmployeeSaga } from './employee';
+import { addUserTypeSaga, getUserTypeSaga } from './userTypes';
+import { addDepartmentSaga, getDepartmentSaga } from './departments';
+import { addTaskSaga, getTaskSaga } from './task';
+import { getUsersSaga } from './settings/user';
+import { addVisitorsSaga, getVisitorsSaga } from './settings/visitors';
+import { getEmployeeByDepartmentSaga, getEmployeeSaga } from './employee';
 
 export default function* watch() {
   yield all([
@@ -41,5 +52,19 @@ export default function* watch() {
     addClassTeacherSaga(),
     getTeachersSaga(),
     addEmployeeSaga(),
+    addUserTypeSaga(),
+    getUserTypeSaga(),
+    addTaskSaga(),
+    getTaskSaga(),
+    addDepartmentSaga(),
+    getDepartmentSaga(),
+    getUsersSaga(),
+    getVisitorsSaga(),
+    addVisitorsSaga(),
+    getEmployeeByDepartmentSaga(),
+    allocateSubjectsSaga(),
+    getEmployeeSaga(),
+    getTimetableSaga(),
+    getTimetableNamesSaga(),
   ]);
 }

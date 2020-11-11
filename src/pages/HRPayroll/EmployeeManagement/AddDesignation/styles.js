@@ -120,11 +120,11 @@ const useStyles = makeStyles((theme) => {
       justifyContent: 'space-between',
       alignItems: 'center',
     },
-    list: {
-      maxHeight: 300,
-      overflow: 'auto',
-      marginTop: 10,
-    },
+    // list: {
+    //   maxHeight: 300,
+    //   overflow: 'auto',
+    //   marginTop: 10,
+    // },
     saveBtn: {
       marginTop: 10,
       marginLeft: 10,

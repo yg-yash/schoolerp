@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import AppBar from '@material-ui/core/AppBar';
 import Button from '@material-ui/core/Button';
 import ArrowRight from '@material-ui/icons/ArrowRight';
@@ -19,32 +19,33 @@ import SaveIcon from '@material-ui/icons/Save';
 import TextField from '@material-ui/core/TextField';
 import EditIcon from '@material-ui/icons/Edit';
 import styles from './styles';
-
-function createData(no, title, course, batch, subject, dateOfSubmission) {
-  return { no, title, course, batch, subject, dateOfSubmission };
-}
-
-const rows = [
-  createData(
-    1,
-    'testdyhuug',
-    'STD II',
-    'A',
-    'English-ENG1001',
-    'e1001-Malavika S Pillai'
-  ),
-  createData(
-    2,
-    'Maths asssignment 4',
-    'STD II',
-    'A',
-    'Maths-ENG1001',
-    'e1001- Malavika S Pillai'
-  ),
-];
+import CircularProgress from '@material-ui/core/CircularProgress';
+import { useDispatch, useSelector } from 'react-redux';
+import * as actions from '../../../../actions/departments';
 
 const AddDepartment = () => {
   const [title, setTitle] = useState('');
+
+  const dispatch = useDispatch();
+  const { list, error, clearFields } = useSelector(
+    (state) => state.departmentReducer
+  );
+
+  const { isDepartmentAdding } = useSelector((state) => state.loadingReducer);
+
+  useEffect(() => {
+    dispatch(actions.getRequest());
+  }, []);
+
+  useEffect(() => {
+    if (clearFields) {
+      setTitle('');
+    }
+  }, [clearFields]);
+
+  const onSubmit = () => {
+    dispatch(actions.addRequest({ name: title }));
+  };
 
   const classes = styles();
   return (
@@ -88,17 +89,25 @@ const AddDepartment = () => {
                   }}
                   className={classes.textField}
                   value={title}
-                  onChange={(e) => setTitle(e.target.vallue)}
+                  onChange={(e) => setTitle(e.target.value)}
                 />
               </div>
+              <Typography variant="body2" className={classes.errorText}>
+                {error && error.error}
+              </Typography>
 
               <Button
                 variant="contained"
                 color="primary"
                 className={classes.saveBtn}
-                startIcon={<SaveIcon />}
+                startIcon={!isDepartmentAdding && <SaveIcon />}
+                onClick={onSubmit}
               >
-                Save
+                {isDepartmentAdding ? (
+                  <CircularProgress color="secondary" />
+                ) : (
+                  'Save'
+                )}
               </Button>
             </CardContent>
           </Card>
@@ -109,35 +118,29 @@ const AddDepartment = () => {
               <TableHead className={classes.tableHeader}>
                 <TableRow>
                   <TableCell>SI.No.</TableCell>
-                  <TableCell align="right">Title</TableCell>
-                  <TableCell align="right">Course</TableCell>
-                  <TableCell align="right">Batch</TableCell>
-                  <TableCell align="right">Subject</TableCell>
-                  <TableCell align="right">Date of Submission</TableCell>
-                  <TableCell align="right">Manage</TableCell>
+                  <TableCell>Department Name</TableCell>
+
+                  <TableCell>Manage</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-                {rows.map((row, index) => (
-                  <TableRow
-                    key={row.no}
-                    className={
-                      index % 2 === 0 ? classes.tableRow : classes.tableHeader
-                    }
-                  >
-                    <TableCell component="th" scope="row">
-                      {row.no}
-                    </TableCell>
-                    <TableCell align="right">{row.title}</TableCell>
-                    <TableCell align="right">{row.course}</TableCell>
-                    <TableCell align="right">{row.batch}</TableCell>
-                    <TableCell align="right">{row.subject}</TableCell>
-                    <TableCell align="right">{row.dateOfSubmission}</TableCell>
-                    <TableCell align="right">
-                      <EditIcon color="primary" />
-                    </TableCell>
-                  </TableRow>
-                ))}
+                {list &&
+                  list.map((row, index) => (
+                    <TableRow
+                      key={index}
+                      className={
+                        index % 2 === 0 ? classes.tableRow : classes.tableHeader
+                      }
+                    >
+                      <TableCell component="th" scope="row">
+                        {index + 1}
+                      </TableCell>
+                      <TableCell>{row.name}</TableCell>
+                      <TableCell>
+                        <EditIcon color="primary" />
+                      </TableCell>
+                    </TableRow>
+                  ))}
               </TableBody>
             </Table>
           </TableContainer>

@@ -10,6 +10,9 @@ import * as notesTypes from '../actions/notes/types';
 import * as timetableTypes from '../actions/timetable/types';
 import * as classTeacherTypes from '../actions/classTeacher/types';
 import * as employeeTypes from '../actions/employee/types';
+import * as userTypes from '../actions/userType/types';
+import * as departmentTypes from '../actions/departments/types';
+import * as visitorsTypes from '../actions/settings/visitors/types';
 
 const initialState = {
   isLoginLoading: false,
@@ -25,6 +28,9 @@ const initialState = {
   isTimetableAdding: false,
   isClassTeacherAdding: false,
   isEmployeeAdding: false,
+  isUserTypeAdding: false,
+  isDepartmentsAdding: false,
+  isVisitorsAdding: false,
 };
 
 export const loadingReducer = createReducer(initialState, {
@@ -105,5 +111,23 @@ export const loadingReducer = createReducer(initialState, {
   },
   [employeeTypes.DISABLE_ADD_EMPLOYEE_LOADER](state) {
     return { ...state, isEmployeeAdding: false };
+  },
+  [userTypes.ENABLE_ADD_USER_TYPE_LOADER](state) {
+    return { ...state, isUserTypeAdding: true };
+  },
+  [userTypes.DISABLE_ADD_USER_TYPE_LOADER](state) {
+    return { ...state, isUserTypeAdding: false };
+  },
+  [departmentTypes.ENABLE_ADD_DEPARTMENT_LOADER](state) {
+    return { ...state, isDepartmentsAdding: true };
+  },
+  [departmentTypes.DISABLE_ADD_DEPARTMENT_LOADER](state) {
+    return { ...state, isDepartmentsAdding: false };
+  },
+  [visitorsTypes.ENABLE_ADD_VISITORS_LOADER](state) {
+    return { ...state, isVisitorsAdding: true };
+  },
+  [visitorsTypes.DISABLE_ADD_VISITORS_LOADER](state) {
+    return { ...state, isVisitorsAdding: false };
   },
 });

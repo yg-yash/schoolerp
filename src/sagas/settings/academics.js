@@ -13,7 +13,7 @@ function addAcademicsApi(token, data) {
   return axios.post(`${API.BASE_URL}/${API.ACADEMIC}/add`, data, { headers });
 }
 
-function* getAcademicsAsync(action) {
+function* getAcademicsAsync() {
   try {
     const token = yield call(getToken);
     const response = yield call(getAcademicsApi, token);

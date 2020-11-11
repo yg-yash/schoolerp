@@ -5,6 +5,7 @@ const initialState = {
   error: null,
   list: [],
   successMessage: '',
+  employeesByDepartment: [],
 };
 
 export const employeeReducer = createReducer(initialState, {
@@ -30,23 +31,42 @@ export const employeeReducer = createReducer(initialState, {
       successMessage: '',
     };
   },
-  //   [types.GET_COURSE_REQUEST](state) {
-  //     return {
-  //       ...state,
-  //       error: null,
-  //     };
-  //   },
-  //   [types.GET_COURSE_RESPONSE](state, action) {
-  //     return {
-  //       ...state,
-  //       error: null,
-  //       courses: action.data,
-  //     };
-  //   },
-  //   [types.GET_COURSE_FAILED](state, action) {
-  //     return {
-  //       ...state,
-  //       error: action.error,
-  //     };
-  //   },
+  [types.GET_EMPLOYEES_REQUEST](state) {
+    return {
+      ...state,
+      error: null,
+    };
+  },
+  [types.GET_EMPLOYEES_RESPONSE](state, action) {
+    return {
+      ...state,
+      error: null,
+      list: action.data,
+    };
+  },
+  [types.GET_EMPLOYEES_FAILED](state, action) {
+    return {
+      ...state,
+      error: action.error,
+    };
+  },
+  [types.GET_EMPLOYEE_BY_DEPARTMENTS_REQUEST](state) {
+    return {
+      ...state,
+      error: null,
+    };
+  },
+  [types.GET_EMPLOYEE_BY_DEPARTMENTS_RESPONSE](state, action) {
+    return {
+      ...state,
+      error: null,
+      employeesByDepartment: action.data,
+    };
+  },
+  [types.GET_EMPLOYEE_BY_DEPARTMENTS_FAILED](state, action) {
+    return {
+      ...state,
+      error: action.error,
+    };
+  },
 });

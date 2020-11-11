@@ -4,6 +4,7 @@ const useStyles = makeStyles((theme) => {
   return {
     container: {
       padding: theme.spacing(3),
+      overflow: 'auto',
     },
     cardHeader: {
       backgroundColor: theme.palette.primary.main,

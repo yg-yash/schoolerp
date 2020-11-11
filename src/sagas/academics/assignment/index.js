@@ -5,11 +5,10 @@ import API from '../../../api/ApiConstants';
 import axios from 'axios';
 
 function addAssignmentApi(token, data) {
-  console.log(data, 'ads');
   const headers = { Authorization: `Bearer ${token}` };
-  // return axios.post(`${API.BASE_URL}/${API.NOTE}/addAssignment`, data, {
-  //   headers,
-  // });
+  return axios.post(`${API.BASE_URL}/${API.NOTE}/addAssignment`, data, {
+    headers,
+  });
 }
 function getAssignmentsApi(token) {
   const headers = { Authorization: `Bearer ${token}` };

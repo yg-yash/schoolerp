@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import AppBar from '@material-ui/core/AppBar';
 import ArrowRight from '@material-ui/icons/ArrowRight';
 import Typography from '@material-ui/core/Typography';
@@ -15,24 +15,17 @@ import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
+import * as action from '../../../actions/settings/visitors';
+import { useDispatch, useSelector } from 'react-redux';
 
-function createData(name, calories, fat, carbs, protein, status) {
-  return { name, calories, fat, carbs, protein, status };
-}
+const VisitorsList = () => {
+  const dispatch = useDispatch();
+  const { visitors } = useSelector((state) => state.visitorsReducer);
 
-const rows = [
-  createData(1, 'Vendors', 'Vendor', 'Principal', 'Payment collection'),
-  createData(
-    2,
-    'School Staff',
-    'School Staff',
-    'Administrator office',
-    'Student performance'
-  ),
-  createData(3, 'Parents', 'Parent', 'Principal', 'For admission'),
-];
+  useEffect(() => {
+    dispatch(action.getRequest());
+  }, []);
 
-const VisitorsList = ({ width }) => {
   const classes = styles();
   return (
     <Wrapper padding={false}>
@@ -89,17 +82,18 @@ const VisitorsList = ({ width }) => {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {rows.map((row, index) => (
-                      <TableRow key={row.name} className={classes.tableRow}>
-                        <TableCell component="th" scope="row">
-                          {row.name}
-                        </TableCell>
-                        <TableCell align="right">{row.calories}</TableCell>
-                        <TableCell align="right">{row.fat}</TableCell>
-                        <TableCell align="right">{row.carbs}</TableCell>
-                        <TableCell align="right">{row.protein}</TableCell>
-                      </TableRow>
-                    ))}
+                    {visitors &&
+                      visitors.map((row, index) => (
+                        <TableRow key={index} className={classes.tableRow}>
+                          <TableCell component="th" scope="row">
+                            {index + 1}
+                          </TableCell>
+                          <TableCell align="right">{row.category}</TableCell>
+                          <TableCell align="right">{row.name}</TableCell>
+                          <TableCell align="right">{row.whomToMeet}</TableCell>
+                          <TableCell align="right">{row.purpose}</TableCell>
+                        </TableRow>
+                      ))}
                   </TableBody>
                 </Table>
               </TableContainer>

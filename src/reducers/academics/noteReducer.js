@@ -33,6 +33,7 @@ export const noteReducer = createReducer(initialState, {
     };
   },
   [types.GET_NOTE_RESPONSE](state, action) {
+    console.log('rember', action.data);
     return {
       ...state,
       error: null,

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
@@ -10,33 +10,63 @@ import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Button from '@material-ui/core/Button';
-
 import { Wrapper } from '../../../../components';
 import AppBar from '@material-ui/core/AppBar';
 import ArrowRight from '@material-ui/icons/ArrowRight';
 import Toolbar from '@material-ui/core/Toolbar';
 import SaveIcon from '@material-ui/icons/Save';
+// import CircularProgress from '@material-ui/core/CircularProgress';
+import { useSelector, useDispatch } from 'react-redux';
+import * as departmentActions from '../../../../actions/departments';
+import * as employeeActions from '../../../../actions/employee';
+import * as courseActions from '../../../../actions/course';
+import * as batchActions from '../../../../actions/batch';
+import * as subjectActions from '../../../../actions/academic/subjects';
 
-const names = [
-  'Chemistry',
-  'Drawing -D3465',
-  'English -ENG1001',
-  'GK-GK100',
-  'GK- GK145',
-];
 const Subjects = () => {
   const classes = styles();
-  const [userType, setUserType] = useState();
-  const [personName, setPersonName] = React.useState([]);
-  const handleChangeMultiple = (event) => {
-    const { options } = event.target;
-    const value = [];
-    for (let i = 0, l = options.length; i < l; i += 1) {
-      if (options[i].selected) {
-        value.push(options[i].value);
-      }
-    }
-    setPersonName(value);
+  const [departmentId, setDepartmentId] = useState('');
+  const [employeeId, setEmployeeId] = useState('');
+  const [courseId, setCourseId] = useState('');
+  const [batchId, setBatchId] = useState('');
+  const [subjectId, setSubjectId] = useState('');
+
+  const dispatch = useDispatch();
+
+  const { list } = useSelector((state) => state.departmentReducer);
+  const { employeesByDepartment } = useSelector(
+    (state) => state.employeeReducer
+  );
+  const { coursesBatch } = useSelector((state) => state.batchReducer);
+  const { courses } = useSelector((state) => state.couseReducer);
+  const { specificSubjects } = useSelector((state) => state.subjectReducer);
+
+  useEffect(() => {
+    dispatch(departmentActions.getRequest());
+    dispatch(courseActions.getRequest());
+  }, []);
+
+  const getEmployees = (id) => {
+    dispatch(employeeActions.getEmployeeByDepartmentRequest(id));
+  };
+
+  const getCoursesBatch = (id) => {
+    dispatch(batchActions.getCourseBatchRequest(id));
+  };
+
+  const getSubject = (batchId) => {
+    dispatch(subjectActions.getCourseBatchRequest(courseId, batchId));
+  };
+
+  const onSubmit = () => {
+    const data = {
+      department: departmentId,
+      employee: employeeId,
+      course: courseId,
+      batch: batchId,
+      subject: subjectId,
+    };
+    dispatch(subjectActions.allocateRequest(data));
   };
   return (
     <Wrapper padding={false}>
@@ -67,14 +97,25 @@ const Subjects = () => {
                 </Typography>
                 <FormControl variant="filled" className={classes.textField}>
                   <Select
-                    value={userType}
+                    value={departmentId}
                     variant="outlined"
-                    onChange={(e) => setUserType(e.target.value)}
+                    onChange={(e) => {
+                      setDepartmentId(e.target.value);
+                      getEmployees(e.target.value);
+                    }}
                     className={classes.select}
                   >
-                    <MenuItem value="india">Maths Department</MenuItem>
-                    <MenuItem value="australia">English Department</MenuItem>
-                    <MenuItem value="usa">Gk Department</MenuItem>
+                    {list && list.length < 1 && (
+                      <MenuItem value="none" disabled>
+                        No Department
+                      </MenuItem>
+                    )}
+                    {list &&
+                      list.map((item, index) => (
+                        <MenuItem value={item._id} key={index}>
+                          {item.name}
+                        </MenuItem>
+                      ))}
                   </Select>
                 </FormControl>
               </div>
@@ -84,13 +125,22 @@ const Subjects = () => {
                 </Typography>
                 <FormControl variant="filled" className={classes.textField}>
                   <Select
-                    value={userType}
+                    value={employeeId}
                     variant="outlined"
-                    onChange={(e) => setUserType(e.target.value)}
+                    onChange={(e) => setEmployeeId(e.target.value)}
                     className={classes.select}
                   >
-                    <MenuItem value="india">Malavika S Pillai</MenuItem>
-                    <MenuItem value="australia">Rahul Sharma</MenuItem>
+                    {employeesByDepartment && employeesByDepartment.length < 1 && (
+                      <MenuItem value="none" disabled>
+                        No Employee
+                      </MenuItem>
+                    )}
+                    {employeesByDepartment &&
+                      employeesByDepartment.map((item, index) => (
+                        <MenuItem value={item._id} key={index}>
+                          {item.firstName}
+                        </MenuItem>
+                      ))}
                   </Select>
                 </FormControl>
               </div>
@@ -100,14 +150,25 @@ const Subjects = () => {
                 </Typography>
                 <FormControl variant="filled" className={classes.textField}>
                   <Select
-                    value={userType}
+                    value={courseId}
                     variant="outlined"
-                    onChange={(e) => setUserType(e.target.value)}
+                    onChange={(e) => {
+                      setCourseId(e.target.value);
+                      getCoursesBatch(e.target.value);
+                    }}
                     className={classes.select}
                   >
-                    <MenuItem value="india">STD I</MenuItem>
-                    <MenuItem value="australia">STD II</MenuItem>
-                    <MenuItem value="australia">STD III</MenuItem>
+                    {courses && courses.length < 1 && (
+                      <MenuItem value="none" disabled>
+                        No Courses
+                      </MenuItem>
+                    )}
+                    {courses &&
+                      courses.map((item, index) => (
+                        <MenuItem value={item._id} key={index}>
+                          {item.courseName}
+                        </MenuItem>
+                      ))}
                   </Select>
                 </FormControl>
               </div>
@@ -117,14 +178,24 @@ const Subjects = () => {
                 </Typography>
                 <FormControl variant="filled" className={classes.textField}>
                   <Select
-                    value={userType}
+                    value={batchId}
                     variant="outlined"
-                    onChange={(e) => setUserType(e.target.value)}
+                    onChange={(e) => {
+                      setBatchId(e.target.value);
+                      getSubject(e.target.value);
+                    }}
                     className={classes.select}
                   >
-                    <MenuItem value="india">A</MenuItem>
-                    <MenuItem value="australia">B</MenuItem>
-                    <MenuItem value="australia">C</MenuItem>
+                    {coursesBatch && coursesBatch.length < 1 && (
+                      <MenuItem value="none" disabled>
+                        No Batch
+                      </MenuItem>
+                    )}
+                    {coursesBatch.map((item, index) => (
+                      <MenuItem value={item._id} key={index}>
+                        {item.batchName}
+                      </MenuItem>
+                    ))}
                   </Select>
                 </FormControl>
               </div>
@@ -134,17 +205,22 @@ const Subjects = () => {
                 </Typography>
                 <FormControl variant="filled" className={classes.textField}>
                   <Select
-                    value={userType}
+                    value={subjectId}
                     variant="outlined"
-                    onChange={(e) => setUserType(e.target.value)}
+                    onChange={(e) => setSubjectId(e.target.value)}
                     className={classes.select}
                   >
-                    <MenuItem value="none" disabled>
-                      Placeholder
-                    </MenuItem>
-                    <MenuItem value="india">English -ENG1001</MenuItem>
-                    <MenuItem value="australia">Gk -GK1001</MenuItem>
-                    <MenuItem value="australia">Maths -MATHS1001</MenuItem>
+                    {specificSubjects && specificSubjects.length < 1 && (
+                      <MenuItem value="none" disabled>
+                        No Subject
+                      </MenuItem>
+                    )}
+                    {specificSubjects &&
+                      specificSubjects.map((item, index) => (
+                        <MenuItem value={item._id} key={index}>
+                          {item.name}
+                        </MenuItem>
+                      ))}
                   </Select>
                 </FormControl>
               </div>
@@ -154,6 +230,7 @@ const Subjects = () => {
               color="primary"
               className={classes.savebtn}
               startIcon={<SaveIcon />}
+              onClick={onSubmit}
             >
               Save
             </Button>

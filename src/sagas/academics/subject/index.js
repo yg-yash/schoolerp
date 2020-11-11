@@ -8,9 +8,10 @@ function addSubjectApi(token, data) {
   const headers = { Authorization: `Bearer ${token}` };
   return axios.post(`${API.BASE_URL}/${API.SUBJECT}/add`, data, { headers });
 }
+
 function assignSubjectApi(token, data) {
   const headers = { Authorization: `Bearer ${token}` };
-  return axios.post(`${API.BASE_URL}/${API.SUBJECT}//assign`, data, {
+  return axios.post(`${API.BASE_URL}/${API.SUBJECT}/assign`, data, {
     headers,
   });
 }
@@ -24,9 +25,15 @@ function getSpecificApi(token, courseId, batchId) {
     }
   );
 }
-function getSubjectsApi(token, courseId, batchId) {
+function getSubjectsApi(token) {
   const headers = { Authorization: `Bearer ${token}` };
   return axios.get(`${API.BASE_URL}/${API.SUBJECT}`, {
+    headers,
+  });
+}
+function allocateSubjectsApi(token, data) {
+  const headers = { Authorization: `Bearer ${token}` };
+  return axios.post(`${API.BASE_URL}/${API.SUBJECT}/allocate`, data, {
     headers,
   });
 }
@@ -85,6 +92,16 @@ function* getSubjectsAsync() {
     yield put(subjectActions.getFailed(e.response.data));
   }
 }
+function* allocateSubjectsAsync(action) {
+  try {
+    const token = yield call(getToken);
+    const response = yield call(allocateSubjectsApi, token);
+    yield put(subjectActions.allocateResponse(response.data, action.data));
+  } catch (e) {
+    console.log(e);
+    yield put(subjectActions.allocateFailed(e.response.data));
+  }
+}
 
 export function* addSubjectSaga() {
   yield takeEvery(types.ADD_SUBJECT_REQUEST, addSubjectAsync);
@@ -98,6 +115,9 @@ export function* getSpecificSaga() {
 }
 export function* getSubjectsSaga() {
   yield takeEvery(types.GET_ALL_SUBJECTS_REQUEST, getSubjectsAsync);
+}
+export function* allocateSubjectsSaga() {
+  yield takeEvery(types.ALLOCATE_SUBJECT_REQUEST, allocateSubjectsAsync);
 }
 
 const getToken = () => {

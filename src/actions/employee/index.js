@@ -20,25 +20,45 @@ export function addFailed(error) {
     error,
   };
 }
-// export function getRequest() {
-//   return {
-//     type: types.GET_COURSE_REQUEST,
-//   };
-// }
+export function getRequest() {
+  return {
+    type: types.GET_EMPLOYEES_REQUEST,
+  };
+}
 
-// export function getResponse(data) {
-//   return {
-//     type: types.GET_COURSE_RESPONSE,
-//     data,
-//   };
-// }
+export function getResponse(data) {
+  return {
+    type: types.GET_EMPLOYEES_RESPONSE,
+    data,
+  };
+}
 
-// export function getFailed(error) {
-//   return {
-//     type: types.GET_COURSE_FAILED,
-//     error,
-//   };
-// }
+export function getFailed(error) {
+  return {
+    type: types.GET_EMPLOYEES_FAILED,
+    error,
+  };
+}
+export function getEmployeeByDepartmentRequest(id) {
+  return {
+    type: types.GET_EMPLOYEE_BY_DEPARTMENTS_REQUEST,
+    id,
+  };
+}
+
+export function getEmployeeByDepartmentResponse(data) {
+  return {
+    type: types.GET_EMPLOYEE_BY_DEPARTMENTS_RESPONSE,
+    data,
+  };
+}
+
+export function getEmployeeByDepartmentFailed(error) {
+  return {
+    type: types.GET_EMPLOYEE_BY_DEPARTMENTS_FAILED,
+    error,
+  };
+}
 
 export function addEnableLoader() {
   return {

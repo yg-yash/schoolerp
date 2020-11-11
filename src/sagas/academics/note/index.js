@@ -31,6 +31,7 @@ function* getAssignmentsAsync() {
   try {
     const token = yield call(getToken);
     const response = yield call(getAssignmentsApi, token);
+
     yield put(assignmentsActions.getResponse(response.data));
   } catch (e) {
     yield put(assignmentsActions.getFailed(e.response.data));

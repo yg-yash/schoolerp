@@ -8,22 +8,21 @@ function loginUserApi(email, password, role) {
   let url;
 
   if (role === 'student') {
-    url = `/${API.STUDENT_LOGIN}`;
+    url = `${API.BASE_URL}/${API.STUDENT}/login`;
   } else if (role === 'superadmin') {
-    url = `/${API.SUPER_ADMIN_LOGIN}`;
+    url = `${API.BASE_URL}/${API.SUPER_ADMIN_LOGIN}/login`;
   } else if (role === 'admin') {
     url = `${API.BASE_URL}/${API.ADMIN}/login`;
   } else if (role === 'guardian') {
-    url = `/${API.GURADIAN_LOGIN}`;
+    url = `${API.BASE_URL}/${API.GURADIAN}/login`;
   } else {
-    url = `/${API.TEACHER_LOGIN}`;
+    url = `${API.BASE_URL}/${API.TEACHER}/login`;
   }
 
   return axios.post(url, { email, password });
 }
 
 function* loginAsync(action) {
-  console.log(action);
   try {
     yield put(loginActions.enableLoader());
     const response = yield call(

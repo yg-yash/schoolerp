@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
@@ -21,6 +21,9 @@ import {
   KeyboardDatePicker,
 } from '@material-ui/pickers';
 import 'date-fns';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import { useDispatch, useSelector } from 'react-redux';
+import * as actions from '../../../actions/task';
 
 const names = [
   'Chemistry',
@@ -37,10 +40,10 @@ const AssignTask = () => {
   const [phone, setPhone] = useState('');
   const [mobile, setMobile] = useState('');
   const [contactPerson, setContactPerson] = useState('');
-  const [selectedDate, setSelectedDate] = React.useState(
+  const [selectedDate, setSelectedDate] = useState(
     new Date('2014-08-18T21:11:54')
   );
-  const [personName, setPersonName] = React.useState([]);
+  const [personName, setPersonName] = useState([]);
   const handleChangeMultiple = (event) => {
     const { options } = event.target;
     const value = [];
@@ -56,6 +59,27 @@ const AssignTask = () => {
     setSelectedDate(date);
   };
 
+  const dispatch = useDispatch();
+  const { tasks, error, clearFields } = useSelector(
+    (state) => state.taskReducer
+  );
+  const { isTaskAdding } = useSelector((state) => state.loadingReducer);
+
+  useEffect(() => {
+    dispatch(actions.getRequest());
+  }, []);
+
+  // useEffect(() => {
+  //   if (clearFields) {
+  //     setTitle('');
+  //   }
+  // }, [clearFields]);
+
+  // const onSubmit = () => {
+  //   dispatch(actions.addRequest(title));
+  // };
+
+  const onSubmit = () => {};
   return (
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
       <Wrapper padding={false}>
@@ -222,13 +246,17 @@ const AssignTask = () => {
                   </FormControl>
                 </div>
               </CardContent>
+              <Typography variant="body2" className={classes.errorText}>
+                {error && error.error}
+              </Typography>
               <Button
                 variant="contained"
                 color="primary"
-                className={classes.savebtn}
-                startIcon={<SaveIcon />}
+                className={classes.saveBtn}
+                startIcon={!isTaskAdding && <SaveIcon />}
+                onClick={onSubmit}
               >
-                Save
+                {isTaskAdding ? <CircularProgress color="secondary" /> : 'Save'}
               </Button>
             </Card>
           </Grid>
