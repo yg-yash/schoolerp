@@ -33,18 +33,18 @@ const Batch = () => {
   const [endDate, setendDate] = useState(new Date());
   const [maximumStudents, setMaximumStudents] = useState('');
   const [courseId, setCourseId] = useState('');
-
+  const [courses, setcourses] = useState([]);
   const dispatch = useDispatch();
 
-  const { courses } = useSelector((state) => state.couseReducer);
+  // const { courses } = useSelector((state) => state.couseReducer);
   const { error } = useSelector((state) => state.batchReducer);
   const { isCoursesLoading, isBatchAdding } = useSelector(
     (state) => state.loadingReducer
   );
 
-  useEffect(() => {
-    dispatch(courseActions.getRequest());
-  }, []);
+  // useEffect(() => {
+  //   dispatch(courseActions.getRequest());
+  // }, []);
 
   const onSubmit = () => {
     const data = {

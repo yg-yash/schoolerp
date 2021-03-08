@@ -36,9 +36,12 @@ const Subjects = () => {
     setSubejctIds(value);
   };
   const dispatch = useDispatch();
-  const { courses } = useSelector((state) => state.couseReducer);
-  const { coursesBatch } = useSelector((state) => state.batchReducer);
-  const { subjects } = useSelector((state) => state.subjectReducer);
+  const [courses, setcourses] = useState([]);
+  const [coursesBatch, setcoursesBatch] = useState([]);
+  const [subjects, setsubjects] = useState([]);
+  // const { courses } = useSelector((state) => state.couseReducer);
+  // const { coursesBatch } = useSelector((state) => state.batchReducer);
+  // const { subjects } = useSelector((state) => state.subjectReducer);
   const { isSubjectAssign } = useSelector((state) => state.loadingReducer);
 
   useEffect(() => {

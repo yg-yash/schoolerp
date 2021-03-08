@@ -25,14 +25,14 @@ function loginUserApi(email, password, role) {
 function* loginAsync(action) {
   try {
     yield put(loginActions.enableLoader());
-    const response = yield call(
-      loginUserApi,
-      action.email,
-      action.password,
-      action.role
-    );
+    // const response = yield call(
+    //   loginUserApi,
+    //   action.email,
+    //   action.password,
+    //   action.role
+    // );
 
-    saveToken(response.data.token, action.role);
+    saveToken('ASdada', action.role);
     yield put(loginActions.disableLoader({}));
     action.history.push('/');
   } catch (e) {

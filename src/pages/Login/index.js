@@ -56,9 +56,9 @@ const Login = () => {
   };
 
   const onSubmit = () => {
-    if (!email || !password) {
-      return;
-    }
+    // if (!email || !password) {
+    //   return;
+    // }
     dispatch(loginActions.requestLogin(email, password, value, history));
   };
   return (
@@ -121,7 +121,7 @@ const Login = () => {
                 startIcon={isLoginLoading ? null : <LockIcon />}
                 className={classes.loginBtn}
                 onClick={onSubmit}
-                disabled={!email || !password}
+                // disabled={!email || !password}
               >
                 {isLoginLoading ? (
                   <CircularProgress color="secondary" size={25} />

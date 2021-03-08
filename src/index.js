@@ -27,12 +27,12 @@ render(
           <Switch>
             <Route exact path="/404" component={NotFound} />
             <Route exact path="/500" component={BackendError} />
-            <AuthRoute exact path="/Lockscreen" component={Lockscreen} />
-            <AuthRoute exact path="/forgot" component={PasswordReset} />
-            <AuthRoute exact path="/signin" component={Signin} />
-            <AuthRoute exact path="/signup" component={Signup} />
+            <Route exact path="/Lockscreen" component={Lockscreen} />
+            <Route exact path="/forgot" component={PasswordReset} />
+            <Route exact path="/signin" component={Signin} />
+            <Route exact path="/signup" component={Signup} />
             <Route exact path="/login" component={Login} />
-            <AuthRoute path="/" component={Dashboard} />
+            <Route path="/" component={Dashboard} />
           </Switch>
         </BrowserRouter>
       </PersistGate>

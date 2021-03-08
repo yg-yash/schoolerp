@@ -1,7 +1,7 @@
 /* App config for apis
  */
 const ApiConstants = {
-  BASE_URL: 'http://ec2-13-126-131-215.ap-south-1.compute.amazonaws.com:8080',
+  BASE_URL: 'http://ec2-15-126-131-215.ap-south-1.compute.amazonaws.com:8080',
   LOGIN: 'login',
   STUDENT: 'student',
   ADMIN_LOGIN: 'user/loginAdmin',

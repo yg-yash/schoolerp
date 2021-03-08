@@ -26,17 +26,20 @@ const ClassTeacherAllocation = () => {
   const [courseId, setCourseId] = useState('');
   const [batchId, setBatchId] = useState('');
   const [teacherId, setTeacherId] = useState('');
+  const [courses, setcourses] = useState([]);
+  const [coursesBatch, setcoursesBatch] = useState([]);
+  const [teachers, setteachers] = useState([]);
 
-  const { courses } = useSelector((state) => state.couseReducer);
-  const { coursesBatch } = useSelector((state) => state.batchReducer);
+  // const { courses } = useSelector((state) => state.couseReducer);
+  // const { coursesBatch } = useSelector((state) => state.batchReducer);
   const { isClassTeacherAdding } = useSelector((state) => state.loadingReducer);
-  const { teachers } = useSelector((state) => state.teacherReducer);
+  // const { teachers } = useSelector((state) => state.teacherReducer);
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    dispatch(courseActions.getRequest());
-    dispatch(teacherActions.getRequest());
-  }, []);
+  // useEffect(() => {
+  //   dispatch(courseActions.getRequest());
+  //   dispatch(teacherActions.getRequest());
+  // }, []);
 
   const getCoursesBatch = (id) => {
     dispatch(batchActions.getCourseBatchRequest(id));
